@@ -1,0 +1,1 @@
+"""CivicQ Backend Application"""
