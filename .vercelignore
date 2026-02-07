@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+venv/
+env/
+ENV/
+.venv/
+
+# Build outputs
+build/
+dist/
+.next/
+
+# Testing
+coverage/
+.pytest_cache/
+__pycache__/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation (deploy separately if needed)
+docs/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Temporary
+tmp/
+temp/
+*.tmp
