@@ -143,6 +143,31 @@ CivicQ/
    npm start
    ```
 
+## Deploy to Vercel (Production)
+
+Deploy CivicQ to the internet in minutes:
+
+### Option 1: Quick Deploy (Frontend Only)
+```bash
+cd frontend
+npm i -g vercel
+vercel --prod
+```
+**Done!** Your frontend is live. See [VERCEL_QUICKSTART.md](VERCEL_QUICKSTART.md) for full setup.
+
+### Option 2: GitHub + Vercel (Recommended)
+1. Push this repo to GitHub
+2. Import to Vercel: https://vercel.com/new
+3. Configure environment variables (see [DEPLOYMENT.md](DEPLOYMENT.md))
+4. Deploy!
+
+**What you need:**
+- Free Vercel account
+- Database: [Neon](https://neon.tech) (free tier with pgvector)
+- Redis: [Upstash](https://upstash.com) (free tier)
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment guide.
+
 ## Development Roadmap
 
 ### Phase 1: MVP (Current)
@@ -181,13 +206,23 @@ CivicQ/
 
 ## Documentation
 
+### Getting Started
+- [QUICKSTART.md](QUICKSTART.md) - 5-minute local setup
+- [SETUP.md](SETUP.md) - Detailed setup guide
+- [TESTING.md](TESTING.md) - Testing guide
+
+### Deployment
+- [VERCEL_QUICKSTART.md](VERCEL_QUICKSTART.md) - Deploy in 5 minutes
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Complete deployment guide
+- [STATUS.md](STATUS.md) - Project status
+
+### Architecture
 - [Architecture Overview](docs/architecture/overview.md)
 - [Database Schema](docs/architecture/database-schema.md)
 - [API Documentation](docs/api/README.md)
-- [Ranking Algorithm](docs/architecture/ranking-algorithm.md)
-- [Verification System](docs/architecture/verification.md)
-- [Video Pipeline](docs/architecture/video-pipeline.md)
-- [Pilot Playbook](docs/deployment/pilot-playbook.md)
+
+### Contributing
+- [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
 
 ## Contributing
 
