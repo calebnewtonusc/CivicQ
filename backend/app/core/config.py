@@ -1,0 +1,130 @@
+"""
+CivicQ Configuration
+
+Centralized configuration management using Pydantic settings.
+Loads from environment variables and .env file.
+"""
+
+from typing import List, Optional
+from pydantic_settings import BaseSettings
+from pydantic import AnyHttpUrl, validator
+import secrets
+
+
+class Settings(BaseSettings):
+    """Application settings"""
+
+    # Environment
+    ENVIRONMENT: str = "development"
+    DEBUG: bool = True
+
+    # API Settings
+    API_V1_STR: str = "/api"
+    PROJECT_NAME: str = "CivicQ"
+
+    # Security
+    SECRET_KEY: str = secrets.token_urlsafe(32)
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+
+    # CORS
+    ALLOWED_ORIGINS: List[str] = [
+        "http://localhost:3000",
+        "http://localhost:8000",
+    ]
+
+    ALLOWED_HOSTS: List[str] = ["*"]
+
+    @validator("ALLOWED_ORIGINS", pre=True)
+    def assemble_cors_origins(cls, v: str | List[str]) -> List[str]:
+        if isinstance(v, str) and not v.startswith("["):
+            return [i.strip() for i in v.split(",")]
+        elif isinstance(v, list):
+            return v
+        raise ValueError(v)
+
+    # Database
+    DATABASE_URL: str = "postgresql://civicq:civicq@localhost:5432/civicq"
+    DATABASE_ECHO: bool = False
+
+    # Redis (for caching and rate limiting)
+    REDIS_URL: str = "redis://localhost:6379/0"
+
+    # S3 / Object Storage
+    S3_BUCKET: Optional[str] = None
+    S3_REGION: Optional[str] = None
+    S3_ACCESS_KEY: Optional[str] = None
+    S3_SECRET_KEY: Optional[str] = None
+    S3_ENDPOINT: Optional[str] = None  # For S3-compatible services
+
+    # CDN
+    CDN_URL: Optional[str] = None
+
+    # Video Processing
+    MAX_VIDEO_DURATION_SECONDS: int = 180  # 3 minutes max
+    VIDEO_TIME_LIMIT_COUNCIL: int = 90  # City council candidates
+    VIDEO_TIME_LIMIT_MAYOR: int = 120   # Mayor candidates
+    VIDEO_TIME_LIMIT_MEASURE: int = 180  # Ballot measures
+
+    # Transcription Service
+    TRANSCRIPTION_SERVICE: str = "whisper"  # Options: whisper, deepgram, assemblyai
+    OPENAI_API_KEY: Optional[str] = None
+    DEEPGRAM_API_KEY: Optional[str] = None
+    ASSEMBLYAI_API_KEY: Optional[str] = None
+
+    # Embeddings for Question Clustering
+    EMBEDDING_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
+    SIMILARITY_THRESHOLD: float = 0.85  # For duplicate detection
+
+    # Question Ranking
+    TOP_QUESTIONS_COUNT: int = 100
+    CLUSTER_MAX_QUESTIONS: int = 5  # Max questions per semantic cluster
+    MINORITY_CONCERN_SLOTS: int = 10  # Reserved slots for minority concerns
+
+    # Rate Limiting
+    RATE_LIMIT_QUESTIONS_PER_DAY: int = 10
+    RATE_LIMIT_VOTES_PER_HOUR: int = 100
+
+    # Verification
+    VERIFICATION_METHOD: str = "sms"  # Options: sms, email, id_proofing
+    VERIFICATION_CODE_EXPIRE_MINUTES: int = 15
+
+    # SMS Service (for verification)
+    TWILIO_ACCOUNT_SID: Optional[str] = None
+    TWILIO_AUTH_TOKEN: Optional[str] = None
+    TWILIO_PHONE_NUMBER: Optional[str] = None
+
+    # Email Service
+    SMTP_HOST: Optional[str] = None
+    SMTP_PORT: int = 587
+    SMTP_USER: Optional[str] = None
+    SMTP_PASSWORD: Optional[str] = None
+    EMAIL_FROM: str = "noreply@civicq.org"
+
+    # Moderation
+    AUTO_MODERATE: bool = True
+    TOXICITY_THRESHOLD: float = 0.7
+
+    # Logging
+    LOG_LEVEL: str = "INFO"
+
+    # Sentry (Error Tracking)
+    SENTRY_DSN: Optional[str] = None
+
+    # Celery (Task Queue)
+    CELERY_BROKER_URL: str = "redis://localhost:6379/1"
+    CELERY_RESULT_BACKEND: str = "redis://localhost:6379/1"
+
+    # Feature Flags
+    ENABLE_VIDEO_RECORDING: bool = True
+    ENABLE_REBUTTALS: bool = True
+    ENABLE_SOURCE_ATTACHMENTS: bool = True
+    ENABLE_VIEWPOINT_CLUSTERING: bool = True
+
+    class Config:
+        env_file = ".env"
+        case_sensitive = True
+
+
+settings = Settings()
