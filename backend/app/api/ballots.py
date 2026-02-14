@@ -200,7 +200,40 @@ async def get_ballot(
     return ballot_response
 
 
-@router.get("/ballot/{ballot_id}", response_model=BallotResponse)
+@router.get("/ballots", response_model=List[BallotResponse])
+async def get_ballots(
+    city_id: Optional[str] = Query(None, description="Filter by city ID"),
+    is_published: Optional[bool] = Query(None, description="Filter by published status"),
+    db: Session = Depends(get_db)
+):
+    """
+    Get all ballots (plural endpoint)
+
+    Returns all ballots, optionally filtered by city or publication status.
+    Public endpoint - no authentication required.
+
+    Args:
+        city_id: Optional city ID filter
+        is_published: Optional published status filter
+        db: Database session
+
+    Returns:
+        List of ballots
+    """
+    query = db.query(Ballot)
+
+    if city_id:
+        query = query.filter(Ballot.city_id == city_id)
+
+    if is_published is not None:
+        query = query.filter(Ballot.is_published == is_published)
+
+    ballots = query.order_by(Ballot.election_date.desc()).all()
+
+    return [BallotResponse.model_validate(ballot) for ballot in ballots]
+
+
+@router.get("/ballots/{ballot_id}", response_model=BallotResponse)
 async def get_ballot_by_id(
     ballot_id: int,
     db: Session = Depends(get_db)
@@ -230,6 +263,53 @@ async def get_ballot_by_id(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Ballot not found"
+        )
+
+    return BallotResponse.model_validate(ballot)
+
+
+@router.get("/ballots/city/{city_id}/date/{election_date}", response_model=BallotResponse)
+async def get_ballot_by_city_and_date(
+    city_id: str,
+    election_date: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Get ballot by city and election date
+
+    Returns a ballot for a specific city and election date.
+    Public endpoint - no authentication required.
+
+    Args:
+        city_id: City ID
+        election_date: Election date (YYYY-MM-DD)
+        db: Database session
+
+    Returns:
+        Ballot with contests and candidates
+
+    Raises:
+        HTTPException 404: If ballot not found
+        HTTPException 400: If date format is invalid
+    """
+    try:
+        parsed_date = date.fromisoformat(election_date)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid election_date format. Use YYYY-MM-DD"
+        )
+
+    ballot = db.query(Ballot).filter(
+        Ballot.city_id == city_id,
+        Ballot.election_date == parsed_date,
+        Ballot.is_published == True
+    ).first()
+
+    if not ballot:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No ballot found for city {city_id} on {election_date}"
         )
 
     return BallotResponse.model_validate(ballot)

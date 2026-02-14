@@ -23,35 +23,87 @@ class StorageService:
     """Service for managing file storage with S3-compatible services"""
 
     def __init__(self):
-        """Initialize S3 client"""
+        """Initialize S3 client with validation"""
         self.bucket = settings.S3_BUCKET
         self.region = settings.S3_REGION or "us-east-1"
         self.cdn_url = settings.CDN_URL
+        self.is_available = False
 
-        # Configure S3 client
-        config = Config(
-            region_name=self.region,
-            signature_version='s3v4',
-            retries={
-                'max_attempts': 3,
-                'mode': 'standard'
+        # Validate required settings
+        if not settings.S3_BUCKET:
+            logger.warning("S3_BUCKET not configured. Storage service will not be available.")
+            return
+
+        if not settings.S3_ACCESS_KEY or not settings.S3_SECRET_KEY:
+            logger.warning("S3 credentials not configured. Storage service will not be available.")
+            return
+
+        try:
+            # Configure S3 client
+            config = Config(
+                region_name=self.region,
+                signature_version='s3v4',
+                retries={
+                    'max_attempts': 3,
+                    'mode': 'standard'
+                }
+            )
+
+            # Support both AWS S3 and S3-compatible services (like Cloudflare R2)
+            client_kwargs = {
+                'aws_access_key_id': settings.S3_ACCESS_KEY,
+                'aws_secret_access_key': settings.S3_SECRET_KEY,
+                'config': config
             }
-        )
 
-        # Support both AWS S3 and S3-compatible services (like Cloudflare R2)
-        client_kwargs = {
-            'aws_access_key_id': settings.S3_ACCESS_KEY,
-            'aws_secret_access_key': settings.S3_SECRET_KEY,
-            'config': config
-        }
+            # Use custom endpoint for S3-compatible services (e.g., Cloudflare R2)
+            if settings.S3_ENDPOINT:
+                client_kwargs['endpoint_url'] = settings.S3_ENDPOINT
 
-        # Use custom endpoint for S3-compatible services (e.g., Cloudflare R2)
-        if settings.S3_ENDPOINT:
-            client_kwargs['endpoint_url'] = settings.S3_ENDPOINT
+            self.s3_client = boto3.client('s3', **client_kwargs)
 
-        self.s3_client = boto3.client('s3', **client_kwargs)
+            # Validate bucket access
+            self._validate_bucket_access()
 
-        logger.info(f"Storage service initialized: bucket={self.bucket}, region={self.region}")
+            self.is_available = True
+            logger.info(f"Storage service initialized: bucket={self.bucket}, region={self.region}")
+
+        except Exception as e:
+            logger.error(f"Failed to initialize storage service: {e}")
+            self.is_available = False
+
+    def _validate_bucket_access(self):
+        """
+        Validate that the bucket exists and is accessible
+
+        Raises:
+            ClientError: If bucket is not accessible
+        """
+        try:
+            self.s3_client.head_bucket(Bucket=self.bucket)
+            logger.info(f"Successfully validated access to bucket: {self.bucket}")
+        except ClientError as e:
+            error_code = e.response.get('Error', {}).get('Code', '')
+            if error_code == '404':
+                logger.error(f"Bucket does not exist: {self.bucket}")
+            elif error_code == '403':
+                logger.error(f"Access denied to bucket: {self.bucket}")
+            else:
+                logger.error(f"Error accessing bucket {self.bucket}: {e}")
+            raise
+
+    def _ensure_storage_available(self):
+        """
+        Ensure storage service is available before operations
+
+        Raises:
+            RuntimeError: If storage service is not available
+        """
+        if not self.is_available:
+            raise RuntimeError(
+                "Storage service is not available. Please check S3 configuration: "
+                "S3_BUCKET, S3_ACCESS_KEY, S3_SECRET_KEY must be set."
+            )
 
     def generate_upload_key(self, user_id: int, filename: str, prefix: str = "videos") -> str:
         """
@@ -90,6 +142,14 @@ class StorageService:
         Returns:
             Dict with upload URL and fields
         """
+        self._ensure_storage_available()
+
+        if not key:
+            raise ValueError("Object key cannot be empty")
+
+        if not content_type:
+            raise ValueError("Content type must be specified")
+
         try:
             # Generate presigned POST for better upload control
             presigned_post = self.s3_client.generate_presigned_post(

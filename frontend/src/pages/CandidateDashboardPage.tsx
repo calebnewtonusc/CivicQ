@@ -5,6 +5,8 @@ import { useAuthContext } from '../contexts/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || '${API_BASE_URL}';
+
 interface DashboardStats {
   total_questions: number;
   answered_questions: number;
@@ -68,12 +70,12 @@ export default function CandidateDashboardPage() {
 
       // Load dashboard stats and pending questions in parallel
       const [statsData, questionsData] = await Promise.all([
-        fetch(`http://localhost:8000/api/candidates/${candidateId}/dashboard`, {
+        fetch(`${API_BASE_URL}/candidates/${candidateId}/dashboard`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
           }
         }).then(res => res.json()),
-        fetch(`http://localhost:8000/api/candidates/${candidateId}/questions/pending`, {
+        fetch(`${API_BASE_URL}/candidates/${candidateId}/questions/pending`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
           }

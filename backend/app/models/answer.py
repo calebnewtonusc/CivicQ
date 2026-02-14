@@ -78,6 +78,7 @@ class VideoAnswer(Base):
     question_version = relationship("QuestionVersion")
     claims = relationship("Claim", back_populates="answer", cascade="all, delete-orphan")
     rebuttals_received = relationship("Rebuttal", foreign_keys="Rebuttal.target_answer_id", back_populates="target_answer")
+    video = relationship("Video", back_populates="answer")
 
     def __repr__(self):
         return f"<VideoAnswer candidate={self.candidate_id} question={self.question_id}>"

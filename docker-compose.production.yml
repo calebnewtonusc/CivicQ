@@ -50,16 +50,25 @@ services:
       target: production
     container_name: civicq-backend-prod
     restart: always
+    env_file:
+      - ./backend/.env.production
     environment:
+      # Override with Docker-specific values
       - ENVIRONMENT=production
+      - DEBUG=false
       - DATABASE_URL=postgresql://${POSTGRES_USER:-civicq}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-civicq}
       - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://:${REDIS_PASSWORD}@redis:6379/1
+      # Required in .env.production:
       - SECRET_KEY=${SECRET_KEY}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
-      - AWS_REGION=${AWS_REGION:-us-west-2}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - BACKEND_URL=${BACKEND_URL}
+      - S3_BUCKET=${S3_BUCKET}
+      - S3_REGION=${S3_REGION:-us-west-2}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
       - SENTRY_DSN=${SENTRY_DSN}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
     ports:
@@ -87,8 +96,11 @@ services:
       dockerfile: Dockerfile
       target: production
       args:
-        - REACT_APP_API_URL=${API_URL}
+        - REACT_APP_API_URL=${REACT_APP_API_URL}
+        - REACT_APP_BASE_URL=${REACT_APP_BASE_URL}
         - REACT_APP_ENV=production
+        - REACT_APP_SENTRY_DSN=${REACT_APP_SENTRY_DSN}
+        - REACT_APP_GOOGLE_ANALYTICS_ID=${REACT_APP_GOOGLE_ANALYTICS_ID}
     container_name: civicq-frontend-prod
     restart: always
     ports:
@@ -136,14 +148,20 @@ services:
     container_name: civicq-celery-worker
     restart: always
     command: celery -A app.worker worker --loglevel=info
+    env_file:
+      - ./backend/.env.production
     environment:
+      # Override with Docker-specific values
       - ENVIRONMENT=production
       - DATABASE_URL=postgresql://${POSTGRES_USER:-civicq}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-civicq}
       - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://:${REDIS_PASSWORD}@redis:6379/1
       - SECRET_KEY=${SECRET_KEY}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
+      - S3_BUCKET=${S3_BUCKET}
+      - S3_REGION=${S3_REGION}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
     depends_on:
       - postgres
       - redis
@@ -161,10 +179,15 @@ services:
     container_name: civicq-celery-beat
     restart: always
     command: celery -A app.worker beat --loglevel=info
+    env_file:
+      - ./backend/.env.production
     environment:
+      # Override with Docker-specific values
       - ENVIRONMENT=production
       - DATABASE_URL=postgresql://${POSTGRES_USER:-civicq}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-civicq}
       - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://:${REDIS_PASSWORD}@redis:6379/1
       - SECRET_KEY=${SECRET_KEY}
     depends_on:
       - postgres

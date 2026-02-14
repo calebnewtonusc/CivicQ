@@ -4,8 +4,9 @@ Authentication API Routes
 Handles user signup, login, verification, and session management.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Form
 from sqlalchemy.orm import Session
+from typing import Optional
 
 from app.models.base import get_db
 from app.models.user import User
@@ -63,20 +64,25 @@ async def signup(
 
 @router.post("/login", response_model=Token)
 async def login(
-    login_data: UserLogin,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    username: Optional[str] = Form(None),
+    password: Optional[str] = Form(None),
+    login_data: Optional[UserLogin] = None
 ):
     """
     User login
 
     Authenticates a user with email and password.
+    Accepts both JSON and form-urlencoded data.
     Returns an access token for subsequent requests.
 
     Rate limit: 5 attempts per 15 minutes per email
 
     Args:
-        login_data: Login credentials (email and password)
         db: Database session
+        username: Email (form-urlencoded format, username field)
+        password: Password (form-urlencoded format)
+        login_data: Login credentials (email and password) - JSON format
 
     Returns:
         Token object with access token and user profile
@@ -86,14 +92,27 @@ async def login(
         HTTPException 403: If account is inactive
         HTTPException 429: If rate limit exceeded
     """
+    # Handle both JSON and form-urlencoded formats
+    if username and password:
+        # Form-urlencoded format (username field contains email)
+        credentials = UserLogin(email=username, password=password)
+    elif login_data:
+        # JSON format
+        credentials = login_data
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Either provide JSON body or form data (username, password)"
+        )
+
     # Check login rate limit
-    RateLimiter.check_login_attempts(login_data.email)
+    RateLimiter.check_login_attempts(credentials.email)
 
     try:
-        user, access_token = AuthService.authenticate_user(db, login_data)
+        user, access_token = AuthService.authenticate_user(db, credentials)
 
         # Reset login attempts on successful login
-        RateLimiter.reset_login_attempts(login_data.email)
+        RateLimiter.reset_login_attempts(credentials.email)
 
         return Token(
             access_token=access_token,

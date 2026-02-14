@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { llmAPI } from '../services/api';
 import { QuestionAnalysis } from '../types';
@@ -19,6 +19,10 @@ const SmartQuestionComposer: React.FC<SmartQuestionComposerProps> = ({
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [analysis, setAnalysis] = useState<QuestionAnalysis | null>(null);
   const [isDuplicate, setIsDuplicate] = useState(false);
+
+  // Use refs to avoid dependency issues in useEffect
+  const analyzeMutationRef = useRef<typeof analyzeMutation | null>(null);
+  const duplicateCheckMutationRef = useRef<typeof duplicateCheckMutation | null>(null);
 
   // Analyze question mutation
   const analyzeMutation = useMutation({
@@ -43,6 +47,12 @@ const SmartQuestionComposer: React.FC<SmartQuestionComposerProps> = ({
     },
   });
 
+  // Store mutation refs
+  useEffect(() => {
+    analyzeMutationRef.current = analyzeMutation;
+    duplicateCheckMutationRef.current = duplicateCheckMutation;
+  });
+
   // Get suggested questions
   const { data: suggestedQuestions } = useQuery({
     queryKey: ['suggested-questions', contestId],
@@ -53,7 +63,7 @@ const SmartQuestionComposer: React.FC<SmartQuestionComposerProps> = ({
     enabled: questionText.length === 0, // Only show when starting fresh
   });
 
-  // Auto-analyze when user pauses typing
+  // Auto-analyze when user pauses typing - FIXED: removed mutations from dependency array
   useEffect(() => {
     if (questionText.length < 10) {
       setShowAnalysis(false);
@@ -63,12 +73,17 @@ const SmartQuestionComposer: React.FC<SmartQuestionComposerProps> = ({
     }
 
     const timer = setTimeout(() => {
-      analyzeMutation.mutate(questionText);
-      duplicateCheckMutation.mutate(questionText);
+      // Use refs to access current mutations without adding them to dependencies
+      if (analyzeMutationRef.current) {
+        analyzeMutationRef.current.mutate(questionText);
+      }
+      if (duplicateCheckMutationRef.current) {
+        duplicateCheckMutationRef.current.mutate(questionText);
+      }
     }, 1500);
 
     return () => clearTimeout(timer);
-  }, [questionText, analyzeMutation, duplicateCheckMutation]);
+  }, [questionText]); // Only depend on questionText, not mutations
 
   const handleUseSuggestion = (suggestion: string) => {
     setQuestionText(suggestion);

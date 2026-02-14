@@ -7,6 +7,8 @@ City staff and moderator endpoints.
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from app.models.base import get_db
+from app.core.security import require_admin
+from app.models.user import User
 from app.services.ballot_data_service import BallotDataService
 from app.schemas.ballot_import import (
     BallotImportRequest,
@@ -31,13 +33,19 @@ router = APIRouter()
 # ============================================================================
 
 @router.get("/modqueue")
-async def get_moderation_queue(db: Session = Depends(get_db)):
+async def get_moderation_queue(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
     """Get moderation queue (admin/moderator only)"""
     return {"message": "Get modqueue endpoint - to be implemented"}
 
 
 @router.post("/modaction")
-async def perform_moderation_action(db: Session = Depends(get_db)):
+async def perform_moderation_action(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
     """Perform a moderation action (admin/moderator only)"""
     return {"message": "Mod action endpoint - to be implemented"}
 
@@ -47,19 +55,28 @@ async def perform_moderation_action(db: Session = Depends(get_db)):
 # ============================================================================
 
 @router.get("/metrics")
-async def get_metrics(db: Session = Depends(get_db)):
+async def get_metrics(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
     """Get city metrics (city admin only)"""
     return {"message": "Get metrics endpoint - to be implemented"}
 
 
 @router.get("/coverage")
-async def get_coverage(db: Session = Depends(get_db)):
+async def get_coverage(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
     """Get answer coverage statistics (city admin only)"""
     return {"message": "Get coverage endpoint - to be implemented"}
 
 
 @router.get("/export")
-async def export_data(db: Session = Depends(get_db)):
+async def export_data(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
     """Export data for public archive (city admin only)"""
     return {"message": "Export data endpoint - to be implemented"}
 
@@ -73,6 +90,7 @@ async def import_ballot_data(
     request: BallotImportRequest,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
 ):
     """
     Import ballot data from external APIs
@@ -153,6 +171,7 @@ async def refresh_ballot_data(
     request: BallotRefreshRequest,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
 ):
     """
     Refresh existing ballot data from external APIs
@@ -200,6 +219,7 @@ async def refresh_ballot_data(
 async def get_ballot_import_status(
     ballot_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
 ):
     """
     Get import status and data quality metrics for a ballot
@@ -228,6 +248,7 @@ async def update_candidate_contacts(
     ballot_id: int,
     updates: BulkContactImport,
     db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
 ):
     """
     Bulk update candidate contact information
@@ -293,6 +314,7 @@ async def update_candidate_contacts(
 async def publish_ballot(
     ballot_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
 ):
     """
     Publish a ballot (make it visible to voters)
@@ -320,6 +342,7 @@ async def publish_ballot(
 async def unpublish_ballot(
     ballot_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
 ):
     """
     Unpublish a ballot (hide from voters)

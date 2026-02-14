@@ -24,15 +24,37 @@ class EmailService:
     def __init__(self):
         """Initialize email service with SendGrid client and Jinja2 templates"""
         self.sendgrid_client = None
+        self.is_configured = False
+
+        # Check if SendGrid is configured
         if hasattr(settings, 'SENDGRID_API_KEY') and settings.SENDGRID_API_KEY:
-            self.sendgrid_client = SendGridAPIClient(settings.SENDGRID_API_KEY)
+            try:
+                self.sendgrid_client = SendGridAPIClient(settings.SENDGRID_API_KEY)
+                self.is_configured = True
+                logger.info("Email service initialized with SendGrid")
+            except Exception as e:
+                logger.error(f"Failed to initialize SendGrid client: {e}")
+                logger.warning("Email service will run in dev mode (logging only)")
+        else:
+            logger.warning("SENDGRID_API_KEY not configured. Email service will run in dev mode (logging only)")
 
         # Setup Jinja2 for email templates
         template_dir = Path(__file__).parent.parent / 'templates' / 'emails'
-        self.jinja_env = Environment(
-            loader=FileSystemLoader(str(template_dir)),
-            autoescape=select_autoescape(['html', 'xml'])
-        )
+
+        # Validate template directory exists
+        if not template_dir.exists():
+            logger.warning(f"Email template directory not found: {template_dir}")
+            logger.info("Creating email template directory")
+            template_dir.mkdir(parents=True, exist_ok=True)
+
+        try:
+            self.jinja_env = Environment(
+                loader=FileSystemLoader(str(template_dir)),
+                autoescape=select_autoescape(['html', 'xml'])
+            )
+        except Exception as e:
+            logger.error(f"Failed to initialize template engine: {e}")
+            self.jinja_env = None
 
     def _render_template(self, template_name: str, context: Dict[str, Any]) -> str:
         """
@@ -45,8 +67,33 @@ class EmailService:
         Returns:
             Rendered HTML string
         """
-        template = self.jinja_env.get_template(template_name)
-        return template.render(**context)
+        if not self.jinja_env:
+            logger.warning(f"Template engine not available, using fallback for {template_name}")
+            return self._generate_fallback_html(context)
+
+        try:
+            template = self.jinja_env.get_template(template_name)
+            return template.render(**context)
+        except Exception as e:
+            logger.error(f"Failed to render template {template_name}: {e}")
+            return self._generate_fallback_html(context)
+
+    def _generate_fallback_html(self, context: Dict[str, Any]) -> str:
+        """
+        Generate simple fallback HTML when templates are not available
+
+        Args:
+            context: Template context variables
+
+        Returns:
+            Simple HTML string
+        """
+        content = "<html><body>"
+        for key, value in context.items():
+            if isinstance(value, str):
+                content += f"<p><strong>{key}:</strong> {value}</p>"
+        content += "</body></html>"
+        return content
 
     def _send_email(
         self,
@@ -67,8 +114,16 @@ class EmailService:
         Returns:
             True if email sent successfully, False otherwise
         """
+        # Validate inputs
+        if not to_email:
+            logger.error("Cannot send email: recipient email is empty")
+            return False
+
+        if not subject:
+            logger.warning("Email subject is empty")
+
         try:
-            if not self.sendgrid_client:
+            if not self.is_configured or not self.sendgrid_client:
                 # Fallback for development - log email instead of sending
                 logger.info(f"[DEV MODE] Email to {to_email}: {subject}")
                 logger.info(f"Content: {plain_content or html_content[:200]}...")

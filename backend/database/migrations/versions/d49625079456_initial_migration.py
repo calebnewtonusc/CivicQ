@@ -17,8 +17,17 @@ depends_on = None
 
 
 def upgrade() -> None:
-    # Enable pgvector extension
-    op.execute('CREATE EXTENSION IF NOT EXISTS vector')
+    # Enable pgvector extension (check if it exists first)
+    op.execute("""
+        DO $$
+        BEGIN
+            CREATE EXTENSION IF NOT EXISTS vector;
+        EXCEPTION
+            WHEN undefined_file THEN
+                RAISE NOTICE 'pgvector extension not available, skipping vector column creation';
+        END
+        $$;
+    """)
 
     # Create enum types
     op.execute("""

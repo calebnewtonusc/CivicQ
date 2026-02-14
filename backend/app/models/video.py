@@ -40,7 +40,7 @@ class Video(Base):
 
     # Ownership
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    answer_id = Column(Integer, ForeignKey("answers.id"), nullable=True, index=True)
+    answer_id = Column(Integer, ForeignKey("video_answers.id"), nullable=True, index=True)
 
     # Basic Info
     title = Column(String(255), nullable=True)
@@ -116,7 +116,7 @@ class Video(Base):
 
     # Relationships
     user = relationship("User", back_populates="videos")
-    answer = relationship("Answer", back_populates="video")
+    answer = relationship("VideoAnswer", back_populates="video")
 
     def __repr__(self):
         return f"<Video(id={self.id}, status={self.status}, duration={self.duration_seconds}s)>"
