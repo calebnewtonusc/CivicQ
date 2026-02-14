@@ -13,32 +13,33 @@
     "vercel-build": "react-scripts build"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.1",
-    "axios": "^1.6.5",
+    "@heroicons/react": "^2.2.0",
     "@tanstack/react-query": "^5.17.9",
-    "zustand": "^4.4.7",
+    "ajv": "^8.12.0",
+    "axios": "^1.6.5",
     "classnames": "^2.5.1",
     "date-fns": "^3.0.6",
-    "react-player": "^2.14.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-markdown": "^9.0.1",
-    "ajv": "^8.12.0"
+    "react-player": "^2.14.1",
+    "react-router-dom": "^6.21.1",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@types/node": "^20.10.6",
     "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.18",
-    "@types/node": "^20.10.6",
-    "typescript": "^4.9.5",
-    "react-scripts": "5.0.1",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.17.0",
+    "autoprefixer": "^10.4.16",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
+    "postcss": "^8.4.33",
     "prettier": "^3.1.1",
+    "react-scripts": "5.0.1",
     "tailwindcss": "^3.4.1",
-    "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.33"
+    "typescript": "^4.9.5"
   },
   "browserslist": {
     "production": [

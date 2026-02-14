@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { useBallot } from '../hooks/useBallots';
 import { useAuthContext } from '../contexts/AuthContext';
 import Layout from '../components/Layout';

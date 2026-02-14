@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useBallots } from '../hooks/useBallots';
+import { format } from 'date-fns';
 
 const SimpleHomePage: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
+  const { data: ballots } = useBallots({ is_published: true });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -191,6 +194,63 @@ const SimpleHomePage: React.FC = () => {
             </p>
           </div>
         </div>
+
+        {/* Available Ballots Section */}
+        {ballots && ballots.length > 0 && (
+          <div className="mb-20">
+            <h3 className="text-3xl font-bold mb-8 text-center text-gray-900">
+              Available Ballots
+            </h3>
+            <div className="grid md:grid-cols-3 gap-6">
+              {ballots.map((ballot) => (
+                <Link
+                  key={ballot.id}
+                  to={`/ballot?id=${ballot.id}`}
+                  className="group bg-white p-8 rounded-2xl shadow-md hover:shadow-2xl transition-all hover:-translate-y-2 border border-gray-100"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                        {ballot.city_name}
+                      </h4>
+                    </div>
+                  </div>
+                  <div className="space-y-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2">
+                      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span>Election: {format(new Date(ballot.election_date), 'MMMM d, yyyy')}</span>
+                    </div>
+                    {ballot.contests && (
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                        </svg>
+                        <span>{ballot.contests.length} Contests</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-semibold text-blue-600 group-hover:text-blue-700">
+                        View Ballot
+                      </span>
+                      <svg className="w-5 h-5 text-blue-600 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* How It Works - Scroll anchor */}
         <div id="how-it-works" className="bg-white rounded-3xl shadow-xl p-10 border border-gray-100">
