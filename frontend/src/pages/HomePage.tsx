@@ -6,6 +6,14 @@ import Layout from '../components/Layout';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import { format } from 'date-fns';
+import {
+  CheckBadgeIcon,
+  QuestionMarkCircleIcon,
+  VideoCameraIcon,
+  ScaleIcon,
+  MagnifyingGlassIcon,
+  CheckCircleIcon,
+} from '@heroicons/react/24/outline';
 
 const HomePage: React.FC = () => {
   const { user, isAuthenticated } = useAuthContext();
@@ -31,32 +39,32 @@ const HomePage: React.FC = () => {
           {/* Features Section */}
           <div className="mb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <FeatureCard
-              icon="🗳️"
+              icon={<CheckBadgeIcon className="w-10 h-10 text-civic-blue" />}
               title="Your Ballot"
               description="View all contests and measures for your local election in one place"
             />
             <FeatureCard
-              icon="❓"
+              icon={<QuestionMarkCircleIcon className="w-10 h-10 text-civic-blue" />}
               title="Ask Questions"
               description="Submit and vote on questions you want candidates to answer"
             />
             <FeatureCard
-              icon="📹"
+              icon={<VideoCameraIcon className="w-10 h-10 text-civic-blue" />}
               title="Watch Answers"
               description="See candidates respond to your questions in structured video format"
             />
             <FeatureCard
-              icon="⚖️"
+              icon={<ScaleIcon className="w-10 h-10 text-civic-blue" />}
               title="Compare Candidates"
               description="Side-by-side comparison of candidate positions and answers"
             />
             <FeatureCard
-              icon="🔍"
+              icon={<MagnifyingGlassIcon className="w-10 h-10 text-civic-blue" />}
               title="Transparent Process"
               description="Anti-polarization ranking ensures diverse representation"
             />
             <FeatureCard
-              icon="✓"
+              icon={<CheckCircleIcon className="w-10 h-10 text-civic-blue" />}
               title="Verified Identity"
               description="All candidates and voters go through identity verification"
             />
@@ -152,13 +160,13 @@ const HomePage: React.FC = () => {
 };
 
 // Helper Components
-const FeatureCard: React.FC<{ icon: string; title: string; description: string }> = ({
+const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; description: string }> = ({
   icon,
   title,
   description,
 }) => (
-  <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-    <div className="text-4xl mb-3">{icon}</div>
+  <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+    <div className="mb-3">{icon}</div>
     <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
     <p className="text-gray-600 text-sm">{description}</p>
   </div>

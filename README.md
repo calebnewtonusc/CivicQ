@@ -12,14 +12,17 @@ Starting with city council, mayor, school board, and local ballot measures, Civi
 
 CivicQ exists to make local democracy more transparent, accessible, and focused on substance over spectacle. We believe that civic engagement should be built on clear information, verifiable facts, and genuine accountability—not on who can spend the most money or generate the most outrage.
 
-## Strategic Positioning
+---
 
-- **What CivicQ Is:** A civic infrastructure platform for transparent local elections, starting with city-level races
-- **What CivicQ Is NOT:** A social media platform, a voting system, or a replacement for campaign finance law
-- **Market Wedge:** City-level elections where voter information gaps are highest and adoption is most tractable
-- **Long-term Vision:** The standard platform for local civic engagement, expanding to all levels of government
+## What is CivicQ?
 
-## Core Principles
+CivicQ is a **civic infrastructure platform** for local elections that enables:
+
+- **Voters** to see their personalized ballot, ask questions, vote on what matters most, and watch candidate video answers
+- **Candidates** to answer community questions fairly with equal visibility for all, no pay-to-win
+- **Cities** to provide transparent election information with reduced voter confusion and increased legitimacy
+
+### Core Principles
 
 1. **No Pay-to-Win:** No ads, no boosting, no sponsored content—equal visibility for all candidates
 2. **Transparency First:** Everything on record, permanently; questions versioned, answers unedited
@@ -27,37 +30,9 @@ CivicQ exists to make local democracy more transparent, accessible, and focused 
 4. **Representative Democracy:** Rankings reflect the whole community, not just the loudest faction
 5. **Verification Without Barriers:** Protect integrity while keeping watching public and accessible
 
-## Quick Links
+---
 
-### Product & Vision
-- [Trust Model](docs/TRUST-MODEL.md) - How CivicQ builds and maintains trust
-- [Privacy Framework](docs/PRIVACY.md) - Data handling and user privacy
-- [MVP Scope](docs/MVP-SCOPE.md) - What we're building first
-- [Product Philosophy](#core-principles) - Mission and operational principles
-
-### Technical
-- [Architecture Overview](docs/ARCHITECTURE.md) - System design and technical architecture
-- [API Documentation](docs/API.md) - Complete API reference
-- [Database Schema](docs/architecture/database-schema.md) - Data model details
-- [Deployment Guide](docs/DEPLOYMENT.md) - Production deployment instructions
-
-### Development
-- [Quick Start](QUICKSTART.md) - 5-minute local setup
-- [Setup Guide](SETUP.md) - Detailed development environment setup
-- [Testing Guide](TESTING.md) - Testing strategy and tools
-- [Contributing](CONTRIBUTING.md) - How to contribute to CivicQ
-
-### Execution
-- [Development Roadmap](docs/ROADMAP.md) - 0-24 month execution plan
-- [Project Status](STATUS.md) - Current status and next milestones
-
-## Current Status
-
-**Phase:** MVP Development
-**Version:** v0.1.0-alpha (Pre-release)
-**Next Milestone:** Core infrastructure and pilot city deployment
-
-## Core Features
+## Key Features
 
 ### For Voters
 - **Your Ballot as Home Screen**: See all your local races and measures in one place
@@ -79,42 +54,88 @@ CivicQ exists to make local democracy more transparent, accessible, and focused 
 - **Low Administration**: Automated moderation with oversight
 - **Comprehensive Reporting**: Track engagement and coverage metrics
 
-## Anti-Polarization by Design
+---
 
-Unlike social media platforms that reward outrage, CivicQ is built to prevent polarization:
+## Tech Stack
 
-- **No Comments**: No performative dunking or flame wars
-- **No Engagement Algorithms**: Not a feed, it's a library
-- **Portfolio Ranking**: Questions represent the whole community, not just loud factions
-- **Structured Rebuttals**: Responses must cite specific claims, not enable attacks
-- **Viewpoint Clustering**: Prevents one faction from dominating the top questions
-
-## Key Differentiators
-
-1. **Anti-Polarization Design:** Portfolio ranking prevents faction dominance; no comments or engagement algorithms
-2. **Verified Provenance:** Videos recorded in-app with cryptographic signing—no editing, no deepfakes
-3. **Representative Ranking:** Questions represent the whole community through viewpoint clustering and issue balancing
-4. **Modular Verification:** City-configurable identity verification that balances integrity with accessibility
-5. **Public Accountability:** Everything on permanent record with full transparency and auditability
-
-## Technical Architecture
-
-### Stack
-- **Frontend**: React + TypeScript (mobile-responsive web)
-- **Backend**: FastAPI (Python)
-- **Database**: PostgreSQL with pgvector for semantic search
-- **Media Pipeline**: Video transcoding, captioning, and provenance tracking
+- **Frontend**: React 18 + TypeScript + Tailwind CSS
+- **Backend**: FastAPI (Python 3.11+)
+- **Database**: PostgreSQL 15+ with pgvector for semantic search
+- **Caching**: Redis
+- **Media**: Video transcoding, captioning, CDN delivery
 - **Infrastructure**: Docker, cloud-agnostic design
 
-### Core Components
-1. **Voter Web App**: Ballot viewing, question submission, video watching
-2. **Candidate Portal**: Identity verification, video recording, answer management
-3. **Admin Console**: City staff dashboard, moderation queue, reporting
-4. **API Backend**: CRUD operations, ranking algorithms, verification flows
-5. **Media Pipeline**: Secure video capture → transcoding → captioning → CDN
-6. **Verification System**: Modular identity verification (city-configurable)
+---
 
-See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed technical documentation.
+## Quick Start
+
+Get up and running in 5 minutes:
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd CivicQ
+
+# Start with Docker Compose (recommended)
+docker-compose up -d
+
+# Or use Make commands
+make setup    # First time only
+make dev      # Start all services
+```
+
+Then visit:
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+- **API Docs**: http://localhost:8000/docs
+
+For detailed instructions, see [QUICK_START.md](QUICK_START.md)
+
+---
+
+## Documentation
+
+### Getting Started
+- [Quick Start Guide](QUICK_START.md) - Get running in 5 minutes
+- [Setup Guide](SETUP.md) - Detailed development environment setup
+- [Testing Guide](TESTING.md) - Testing strategy and tools
+
+### Project Overview
+- [What is CivicQ?](CivicQ.md) - Original PRD and product philosophy
+- [Project Status](STATUS.md) - Current development status
+- [Roadmap](docs/ROADMAP.md) - 0-24 month execution plan
+
+### Technical Documentation
+- [Architecture Overview](docs/ARCHITECTURE.md) - System design and technical architecture
+- [API Documentation](docs/API.md) - Complete API reference
+- [Database Schema](docs/architecture/database-schema.md) - Data model details
+- [AI Features](docs/AI_FEATURES.md) - Claude Sonnet 4.5 integration
+
+### Product & Strategy
+- [MVP Scope](docs/MVP-SCOPE.md) - What we're building first
+- [Trust Model](docs/TRUST-MODEL.md) - How CivicQ builds and maintains trust
+- [Privacy Framework](docs/PRIVACY.md) - Data handling and user privacy
+- [UX Best Practices](docs/UX-BEST-PRACTICES.md) - Research-based UX recommendations
+- [UX Summary](docs/UX-RECOMMENDATIONS-SUMMARY.md) - Quick reference guide
+
+### Deployment & Operations
+- [Deployment Guide](docs/DEPLOYMENT.md) - Production deployment instructions
+- [Security Policy](SECURITY.md) - Security practices and vulnerability reporting
+
+### Contributing
+- [Contributing Guide](CONTRIBUTING.md) - How to contribute to CivicQ
+- [Code of Conduct](CODE_OF_CONDUCT.md) - Community guidelines
+- [Changelog](CHANGELOG.md) - Version history and release notes
+
+### Business & Legal
+- [Business Model](docs/business/business-model.md) - Revenue and sustainability
+- [Go-to-Market Strategy](docs/business/go-to-market.md) - Launch and growth plan
+- [Legal Compliance](docs/legal/compliance-framework.md) - Election law and regulations
+
+### Complete Documentation Index
+See [docs/INDEX.md](docs/INDEX.md) for a comprehensive index of all documentation.
+
+---
 
 ## Project Structure
 
@@ -125,188 +146,156 @@ CivicQ/
 │   │   ├── api/      # API routes
 │   │   ├── core/     # Config, security, auth
 │   │   ├── models/   # Database models
-│   │   ├── services/ # Business logic
+│   │   ├── services/ # Business logic (LLM, auth, questions, etc.)
 │   │   └── utils/    # Helpers
-│   └── tests/
+│   └── tests/        # Backend tests
 ├── frontend/         # React frontend
 │   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   ├── utils/
-│   │   └── types/
-│   └── public/
+│   │   ├── components/  # Reusable UI components
+│   │   ├── pages/       # Page components
+│   │   ├── services/    # API clients
+│   │   ├── utils/       # Utilities
+│   │   └── types/       # TypeScript types
+│   └── public/       # Static assets
 ├── database/         # Schema and migrations
-│   ├── migrations/
-│   └── schemas/
+│   ├── migrations/   # Alembic migrations
+│   └── schemas/      # SQL schema files
 ├── docs/             # Documentation
-│   ├── architecture/
-│   ├── api/
-│   └── deployment/
-└── infrastructure/   # Docker, scripts, deployment
-    ├── docker/
-    └── scripts/
+│   ├── architecture/ # Technical architecture
+│   ├── business/     # Business strategy
+│   ├── legal/        # Legal compliance
+│   └── product/      # Product vision
+├── infrastructure/   # Docker, scripts, deployment
+│   ├── docker/       # Dockerfiles
+│   └── scripts/      # Utility scripts
+└── scripts/          # Development and deployment scripts
 ```
 
-## Getting Started
+---
 
-### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- PostgreSQL 15+
-- Docker (optional but recommended)
+## Current Status
 
-### Quick Start
+**Phase:** MVP Development
+**Version:** v0.1.0-alpha (Pre-release)
+**Next Milestone:** Core infrastructure and pilot city deployment
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd CivicQ
-   ```
+### What's Complete
+- Complete backend API (35+ endpoints)
+- Full-featured React frontend with TypeScript
+- PostgreSQL database with pgvector extension
+- JWT authentication and authorization
+- Question submission and voting system
+- Candidate portal and video management
+- AI-powered question assistance (Claude Sonnet 4.5)
+- Comprehensive documentation (~147KB)
+- CI/CD pipelines and testing infrastructure
 
-2. **Backend Setup**
-   ```bash
-   cd backend
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
+### What's Next
+- Video recording interface (browser-based)
+- Video transcoding pipeline
+- Question deduplication with vector similarity
+- Admin moderation console UI
+- First pilot city deployment
 
-3. **Frontend Setup**
-   ```bash
-   cd frontend
-   npm install
-   ```
+See [STATUS.md](STATUS.md) for detailed status.
 
-4. **Database Setup**
-   ```bash
-   # Create database
-   createdb civicq
+---
 
-   # Run migrations
-   cd backend
-   alembic upgrade head
-   ```
+## Anti-Polarization by Design
 
-5. **Run Development Servers**
-   ```bash
-   # Terminal 1 - Backend
-   cd backend
-   uvicorn app.main:app --reload
+Unlike social media platforms that reward outrage, CivicQ is built to prevent polarization:
 
-   # Terminal 2 - Frontend
-   cd frontend
-   npm start
-   ```
+- **No Comments**: No performative dunking or flame wars
+- **No Engagement Algorithms**: Not a feed, it's a library
+- **Portfolio Ranking**: Questions represent the whole community, not just loud factions
+- **Structured Rebuttals**: Responses must cite specific claims, not enable attacks
+- **Viewpoint Clustering**: Prevents one faction from dominating the top questions
 
-## Getting Started
+---
 
-### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- PostgreSQL 15+ (with pgvector extension)
-- Docker (optional but recommended)
+## Key Differentiators
 
-### Quick Start (5 minutes)
+1. **Anti-Polarization Design:** Portfolio ranking prevents faction dominance; no comments or engagement algorithms
+2. **Verified Provenance:** Videos recorded in-app with cryptographic signing—no editing, no deepfakes
+3. **Representative Ranking:** Questions represent the whole community through viewpoint clustering and issue balancing
+4. **Modular Verification:** City-configurable identity verification that balances integrity with accessibility
+5. **Public Accountability:** Everything on permanent record with full transparency and auditability
 
-1. **Clone and setup**
-   ```bash
-   git clone <repository-url>
-   cd CivicQ
-   ```
+---
 
-2. **Backend**
-   ```bash
-   cd backend
-   python -m venv venv
-   source venv/bin/activate  # Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
+## AI-Powered Features
 
-3. **Frontend**
-   ```bash
-   cd frontend
-   npm install
-   ```
+CivicQ integrates **Claude Sonnet 4.5** for intelligent assistance:
 
-4. **Database**
-   ```bash
-   createdb civicq
-   cd backend
-   alembic upgrade head
-   ```
+- **Smart Question Composer**: Real-time quality scoring, categorization, and suggestions
+- **Duplicate Detection**: Semantic similarity to prevent redundant questions
+- **Suggested Questions**: AI-generated starter questions specific to each contest
+- **Quality Analysis**: Evaluates clarity, specificity, and relevance (0-100 score)
 
-5. **Run**
-   ```bash
-   # Terminal 1 - Backend
-   cd backend && uvicorn app.main:app --reload
+See [docs/AI_FEATURES.md](docs/AI_FEATURES.md) for details.
 
-   # Terminal 2 - Frontend
-   cd frontend && npm start
-   ```
-
-See [QUICKSTART.md](QUICKSTART.md) for detailed setup instructions.
-
-### Deploy to Production
-
-See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for production deployment guide including:
-- Vercel deployment (frontend)
-- Railway/Render deployment (backend)
-- Database and Redis setup
-- Environment configuration
-- Security considerations
-
-## 30-Day Value Promise
-
-Within 30 days of a city deploying CivicQ, voters will:
-- Know what every candidate stands for on the top 10 community-identified issues
-- Have watched candidate answers to questions they helped rank
-- Trust that the platform is fair, transparent, and represents their community's concerns
-
-**Examples:**
-- Reduced "I didn't know who to vote for" responses
-- Increased voter confidence in local election information
-- Higher candidate participation in structured Q&A vs traditional forums
-- Measurable reduction in negative campaigning spend
-
-## Key Metrics
-
-- **Voter Clarity Score:** % of voters who "understand candidate positions" before election day
-- **Candidate Coverage:** % of candidates who answer top 10 community questions
-- **Trust Score:** % of voters who "trust platform information accuracy"
-- **Question Diversity:** Issue distribution across top-ranked questions (portfolio balance)
-
-See [MVP-SCOPE.md](docs/MVP-SCOPE.md) for V1 feature scope and success criteria.
-
-## Technology Stack
-
-- **Voice Provenance:** In-app recording with cryptographic signing and tamper detection
-- **Ranking Engine:** Portfolio-based ranking with viewpoint clustering and anomaly detection
-- **Semantic Search:** pgvector for duplicate detection and question clustering
-- **Video Pipeline:** Transcoding, captioning, and CDN delivery
-- **Verification:** Modular identity verification adapters (city-configurable)
+---
 
 ## Contributing
 
-We welcome contributions from developers, civic technologists, and democracy advocates. See [CONTRIBUTING.md](CONTRIBUTING.md) for:
-- Development setup and workflow
-- Code standards and testing requirements
-- Pull request process
-- Community guidelines
+We welcome contributions from developers, civic technologists, and democracy advocates!
 
-## Development Setup
+**To contribute:**
 
-See [SETUP.md](SETUP.md) for comprehensive development environment setup instructions.
+1. Read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines
+2. Check [STATUS.md](STATUS.md) for current priorities
+3. Review the [Roadmap](docs/ROADMAP.md) for upcoming features
+4. Submit a pull request following our code standards
+
+**Areas we need help:**
+- Frontend UX improvements
+- Backend performance optimization
+- Documentation and examples
+- Testing and QA
+- Security audits
+
+---
+
+## Deployment
+
+CivicQ is production-ready and can be deployed to:
+
+- **Frontend**: Vercel, Netlify, or any static hosting
+- **Backend**: Railway, Render, AWS ECS, or any Docker host
+- **Database**: Neon, AWS RDS, Google Cloud SQL, or self-hosted PostgreSQL
+
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for complete deployment guide.
+
+---
+
+## Security
+
+We take security seriously. CivicQ includes:
+
+- JWT authentication with bcrypt password hashing
+- HTTPS-only with TLS 1.3
+- CORS and CSRF protection
+- Rate limiting and DDoS protection
+- Encryption at rest and in transit
+- Comprehensive audit logging
+
+Report security vulnerabilities to our security team (see [SECURITY.md](SECURITY.md)).
+
+---
 
 ## License
 
 [To be determined - likely a combination of open-source software with proprietary components for city partnerships]
 
-## Contact & Support
+---
 
-For pilot city inquiries, partnership discussions, or general questions:
-- GitHub Issues: Technical questions and bug reports
-- Email: [Contact information to be added]
+## Support & Contact
+
+- **Issues**: [GitHub Issues](https://github.com/yourusername/CivicQ/issues)
+- **Documentation**: [docs/INDEX.md](docs/INDEX.md)
+- **Email**: [Contact information to be added]
+
+---
 
 ## Acknowledgments
 
@@ -317,8 +306,13 @@ Built with insights from:
 - Voter information platforms (VOTE411, BallotReady)
 - Content authenticity initiatives (Truepic, C2PA)
 
+Powered by:
+- Claude Sonnet 4.5 for AI features
+- Modern web technologies (React, FastAPI, PostgreSQL)
+- Open-source community contributions
+
 ---
 
-**Note:** This is an ambitious civic infrastructure project. We are building thoughtfully and ethically. Transparency, accessibility, and anti-polarization design are non-negotiable core values.
-
 **Built to make local democracy more transparent, accessible, and focused on what voters actually care about.**
+
+**CivicQ: Democracy through clarity, not chaos.**

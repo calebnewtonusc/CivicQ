@@ -13,6 +13,12 @@ import QuestionPage from './pages/QuestionPage';
 import CandidatePage from './pages/CandidatePage';
 import NotFoundPage from './pages/NotFoundPage';
 
+// Candidate Portal Pages
+import CandidateDashboardPage from './pages/CandidateDashboardPage';
+import CandidateProfileEditPage from './pages/CandidateProfileEditPage';
+import CandidateAnswerPage from './pages/CandidateAnswerPage';
+import CandidateOnboardingPage from './pages/CandidateOnboardingPage';
+
 // Create React Query client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,6 +44,13 @@ function App() {
               <Route path="/contest/:contestId" element={<ContestPage />} />
               <Route path="/question/:questionId" element={<QuestionPage />} />
               <Route path="/candidate/:candidateId" element={<CandidatePage />} />
+
+              {/* Candidate Portal Routes */}
+              <Route path="/candidate/dashboard" element={<CandidateDashboardPage />} />
+              <Route path="/candidate/profile/edit" element={<CandidateProfileEditPage />} />
+              <Route path="/candidate/answer/:questionId" element={<CandidateAnswerPage />} />
+              <Route path="/candidate/onboarding" element={<CandidateOnboardingPage />} />
+
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </div>

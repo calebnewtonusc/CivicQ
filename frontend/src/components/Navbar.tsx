@@ -58,6 +58,11 @@ const Navbar: React.FC = () => {
                   <Link to="/questions" className={navLinkClass('/questions')}>
                     Questions
                   </Link>
+                  {user?.role === 'candidate' && (
+                    <Link to="/candidate/dashboard" className={navLinkClass('/candidate/dashboard')}>
+                      Dashboard
+                    </Link>
+                  )}
                 </>
               )}
             </div>
@@ -113,6 +118,31 @@ const Navbar: React.FC = () => {
                           <p className="text-xs text-gray-500 mt-1">{user.city_name}</p>
                         )}
                       </div>
+
+                      {user?.role === 'candidate' && (
+                        <Link
+                          to="/candidate/dashboard"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                          onClick={() => setIsProfileDropdownOpen(false)}
+                        >
+                          <div className="flex items-center">
+                            <svg
+                              className="w-4 h-4 mr-2"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                              />
+                            </svg>
+                            Candidate Dashboard
+                          </div>
+                        </Link>
+                      )}
 
                       <Link
                         to="/profile"
@@ -265,13 +295,24 @@ const Navbar: React.FC = () => {
               My Ballot
             </Link>
             {isAuthenticated && (
-              <Link
-                to="/questions"
-                className={mobileNavLinkClass('/questions')}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Questions
-              </Link>
+              <>
+                <Link
+                  to="/questions"
+                  className={mobileNavLinkClass('/questions')}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Questions
+                </Link>
+                {user?.role === 'candidate' && (
+                  <Link
+                    to="/candidate/dashboard"
+                    className={mobileNavLinkClass('/candidate/dashboard')}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                )}
+              </>
             )}
           </div>
 

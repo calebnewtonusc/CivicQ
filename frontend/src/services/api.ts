@@ -18,6 +18,18 @@ import {
   SuggestedQuestionsResponse,
   LLMHealthResponse,
 } from '../types';
+import {
+  getMockBallots,
+  getMockBallotById,
+  getMockContestById,
+  getMockContestCandidates,
+  getMockContestQuestions,
+  getMockQuestionById,
+  getMockQuestionVideoAnswers,
+  getMockCandidateById,
+  getMockCandidateVideoAnswers,
+} from '../data/mockData';
+import { setDemoMode, getDemoMode } from './demoMode';
 
 // API Configuration
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
@@ -101,36 +113,91 @@ export const ballotAPI = {
     city_id?: string;
     is_published?: boolean;
   }): Promise<Ballot[]> => {
-    const response = await apiClient.get<Ballot[]>('/ballots', { params });
-    return response.data;
+    try {
+      const response = await apiClient.get<Ballot[]>('/ballots', { params });
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && (!error.response || error.code === 'ERR_NETWORK')) {
+        setDemoMode(true);
+        return getMockBallots(params);
+      }
+      throw error;
+    }
   },
 
   getById: async (id: number): Promise<Ballot> => {
-    const response = await apiClient.get<Ballot>(`/ballots/${id}`);
-    return response.data;
+    try {
+      const response = await apiClient.get<Ballot>(`/ballots/${id}`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && (!error.response || error.code === 'ERR_NETWORK')) {
+        setDemoMode(true);
+        const ballot = getMockBallotById(id);
+        if (!ballot) throw new Error('Ballot not found');
+        return ballot;
+      }
+      throw error;
+    }
   },
 
   getByCityAndDate: async (cityId: string, electionDate: string): Promise<Ballot> => {
-    const response = await apiClient.get<Ballot>(`/ballots/city/${cityId}/date/${electionDate}`);
-    return response.data;
+    try {
+      const response = await apiClient.get<Ballot>(`/ballots/city/${cityId}/date/${electionDate}`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && (!error.response || error.code === 'ERR_NETWORK')) {
+        setDemoMode(true);
+        const ballots = getMockBallots({ city_id: cityId });
+        if (ballots.length === 0) throw new Error('Ballot not found');
+        return ballots[0];
+      }
+      throw error;
+    }
   },
 };
 
 // Contest API
 export const contestAPI = {
   getById: async (id: number): Promise<Contest> => {
-    const response = await apiClient.get<Contest>(`/contests/${id}`);
-    return response.data;
+    try {
+      const response = await apiClient.get<Contest>(`/contests/${id}`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && (!error.response || error.code === 'ERR_NETWORK')) {
+        setDemoMode(true);
+        const contest = getMockContestById(id);
+        if (!contest) throw new Error('Contest not found');
+        return contest;
+      }
+      throw error;
+    }
   },
 
   getByBallot: async (ballotId: number): Promise<Contest[]> => {
-    const response = await apiClient.get<Contest[]>(`/ballots/${ballotId}/contests`);
-    return response.data;
+    try {
+      const response = await apiClient.get<Contest[]>(`/ballots/${ballotId}/contests`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && (!error.response || error.code === 'ERR_NETWORK')) {
+        setDemoMode(true);
+        const ballot = getMockBallotById(ballotId);
+        return ballot?.contests || [];
+      }
+      throw error;
+    }
   },
 
   getCandidates: async (contestId: number): Promise<Candidate[]> => {
-    const response = await apiClient.get<Candidate[]>(`/contests/${contestId}/candidates`);
-    return response.data;
+    try {
+      const response = await apiClient.get<Candidate[]>(`/contests/${contestId}/candidates`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && (!error.response || error.code === 'ERR_NETWORK')) {
+        setDemoMode(true);
+        return getMockContestCandidates(contestId);
+      }
+      throw error;
+    }
   },
 
   getQuestions: async (
@@ -141,27 +208,56 @@ export const contestAPI = {
       page_size?: number;
     }
   ): Promise<PaginatedResponse<Question>> => {
-    const response = await apiClient.get<PaginatedResponse<Question>>(
-      `/contests/${contestId}/questions`,
-      { params }
-    );
-    return response.data;
+    try {
+      const response = await apiClient.get<PaginatedResponse<Question>>(
+        `/contests/${contestId}/questions`,
+        { params }
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && (!error.response || error.code === 'ERR_NETWORK')) {
+        setDemoMode(true);
+        return getMockContestQuestions(contestId, params);
+      }
+      throw error;
+    }
   },
 };
 
 // Candidate API
 export const candidateAPI = {
   getById: async (id: number): Promise<Candidate> => {
-    const response = await apiClient.get<Candidate>(`/candidates/${id}`);
-    return response.data;
+    try {
+      const response = await apiClient.get<Candidate>(`/candidates/${id}`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && (!error.response || error.code === 'ERR_NETWORK')) {
+        setDemoMode(true);
+        const candidate = getMockCandidateById(id);
+        if (!candidate) throw new Error('Candidate not found');
+        return candidate;
+      }
+      throw error;
+    }
   },
 
   getVideoAnswers: async (candidateId: number): Promise<VideoAnswer[]> => {
-    const response = await apiClient.get<VideoAnswer[]>(`/candidates/${candidateId}/answers`);
-    return response.data;
+    try {
+      const response = await apiClient.get<VideoAnswer[]>(`/candidates/${candidateId}/answers`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && (!error.response || error.code === 'ERR_NETWORK')) {
+        setDemoMode(true);
+        return getMockCandidateVideoAnswers(candidateId);
+      }
+      throw error;
+    }
   },
 
   update: async (id: number, data: Partial<Candidate>): Promise<Candidate> => {
+    if (getDemoMode()) {
+      throw new Error('Cannot update candidates in demo mode');
+    }
     const response = await apiClient.put<Candidate>(`/candidates/${id}`, data);
     return response.data;
   },
@@ -170,33 +266,74 @@ export const candidateAPI = {
 // Question API
 export const questionAPI = {
   getById: async (id: number): Promise<Question> => {
-    const response = await apiClient.get<Question>(`/questions/${id}`);
-    return response.data;
+    try {
+      const response = await apiClient.get<Question>(`/questions/${id}`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && (!error.response || error.code === 'ERR_NETWORK')) {
+        setDemoMode(true);
+        const question = getMockQuestionById(id);
+        if (!question) throw new Error('Question not found');
+        return question;
+      }
+      throw error;
+    }
   },
 
   create: async (data: QuestionSubmit): Promise<Question> => {
+    if (getDemoMode()) {
+      throw new Error('Cannot create questions in demo mode. This is a read-only demo.');
+    }
     const response = await apiClient.post<Question>('/questions', data);
     return response.data;
   },
 
   update: async (id: number, data: Partial<QuestionSubmit>): Promise<Question> => {
+    if (getDemoMode()) {
+      throw new Error('Cannot update questions in demo mode');
+    }
     const response = await apiClient.put<Question>(`/questions/${id}`, data);
     return response.data;
   },
 
   delete: async (id: number): Promise<void> => {
+    if (getDemoMode()) {
+      throw new Error('Cannot delete questions in demo mode');
+    }
     await apiClient.delete(`/questions/${id}`);
   },
 
   getVideoAnswers: async (questionId: number): Promise<VideoAnswer[]> => {
-    const response = await apiClient.get<VideoAnswer[]>(`/questions/${questionId}/answers`);
-    return response.data;
+    try {
+      const response = await apiClient.get<VideoAnswer[]>(`/questions/${questionId}/answers`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && (!error.response || error.code === 'ERR_NETWORK')) {
+        setDemoMode(true);
+        return getMockQuestionVideoAnswers(questionId);
+      }
+      throw error;
+    }
   },
 };
 
 // Vote API
 export const voteAPI = {
   upvote: async (questionId: number): Promise<Vote> => {
+    if (getDemoMode()) {
+      // Simulate client-side voting in demo mode
+      const mockVote: Vote = {
+        id: Math.floor(Math.random() * 10000),
+        user_id: 1,
+        question_id: questionId,
+        value: 1,
+        weight: 1,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      localStorage.setItem(`demo_vote_${questionId}`, JSON.stringify(mockVote));
+      return mockVote;
+    }
     const response = await apiClient.post<Vote>(`/questions/${questionId}/vote`, {
       value: 1,
     });
@@ -204,6 +341,20 @@ export const voteAPI = {
   },
 
   downvote: async (questionId: number): Promise<Vote> => {
+    if (getDemoMode()) {
+      // Simulate client-side voting in demo mode
+      const mockVote: Vote = {
+        id: Math.floor(Math.random() * 10000),
+        user_id: 1,
+        question_id: questionId,
+        value: -1,
+        weight: 1,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      localStorage.setItem(`demo_vote_${questionId}`, JSON.stringify(mockVote));
+      return mockVote;
+    }
     const response = await apiClient.post<Vote>(`/questions/${questionId}/vote`, {
       value: -1,
     });
@@ -211,10 +362,18 @@ export const voteAPI = {
   },
 
   removeVote: async (questionId: number): Promise<void> => {
+    if (getDemoMode()) {
+      localStorage.removeItem(`demo_vote_${questionId}`);
+      return;
+    }
     await apiClient.delete(`/questions/${questionId}/vote`);
   },
 
   getMyVote: async (questionId: number): Promise<Vote | null> => {
+    if (getDemoMode()) {
+      const stored = localStorage.getItem(`demo_vote_${questionId}`);
+      return stored ? JSON.parse(stored) : null;
+    }
     try {
       const response = await apiClient.get<Vote>(`/questions/${questionId}/vote`);
       return response.data;
