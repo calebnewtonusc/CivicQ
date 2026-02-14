@@ -24,19 +24,17 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <BrowserRouter>
-          <div className="min-h-screen bg-gray-50">
-            <Routes>
-              <Route path="/" element={<SimpleHomePage />} />
-              <Route path="/ballot" element={<BallotPage />} />
-              <Route path="/contest/:contestId" element={<ContestPage />} />
-              <Route path="/question/:questionId" element={<QuestionPage />} />
-              <Route path="/candidate/:candidateId" element={<CandidatePage />} />
-            </Routes>
-          </div>
-        </BrowserRouter>
-      </AuthProvider>
+      <BrowserRouter>
+        <div className="min-h-screen bg-gray-50">
+          <Routes>
+            <Route path="/" element={<SimpleHomePage />} />
+            <Route path="/ballot" element={<BallotPage />} />
+            <Route path="/contest/:contestId" element={<ContestPage />} />
+            <Route path="/question/:questionId" element={<QuestionPage />} />
+            <Route path="/candidate/:candidateId" element={<CandidatePage />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }
