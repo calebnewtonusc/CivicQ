@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Layout } from '../components/Layout';
+import { Layout } from '../components';
 import { useAuthContext } from '../contexts/AuthContext';
 import { VideoAnswerRecorder } from '../components/VideoAnswerRecorder';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { ErrorMessage } from '../components/ErrorMessage';
+import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
 
 interface Question {
   id: number;
@@ -80,7 +80,7 @@ export default function CandidateAnswerPage() {
     return (
       <Layout>
         <div className="flex justify-center items-center min-h-[60vh]">
-          <LoadingSpinner size="large" />
+          <LoadingSpinner size="lg" />
         </div>
       </Layout>
     );

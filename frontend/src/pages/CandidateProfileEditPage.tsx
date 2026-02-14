@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout } from '../components/Layout';
+import { Layout } from '../components';
 import { useAuthContext } from '../contexts/AuthContext';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { ErrorMessage } from '../components/ErrorMessage';
-import { SuccessMessage } from '../components/SuccessMessage';
+import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
+import SuccessMessage from '../components/SuccessMessage';
 
+// This interface is for internal use only
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface CandidateProfile {
   id: number;
   name: string;
@@ -157,7 +159,7 @@ export default function CandidateProfileEditPage() {
     return (
       <Layout>
         <div className="flex justify-center items-center min-h-[60vh]">
-          <LoadingSpinner size="large" />
+          <LoadingSpinner size="lg" />
         </div>
       </Layout>
     );
@@ -364,7 +366,7 @@ export default function CandidateProfileEditPage() {
             >
               {saving ? (
                 <>
-                  <LoadingSpinner size="small" className="mr-2" />
+                  <LoadingSpinner size="sm" className="mr-2" />
                   Saving...
                 </>
               ) : (

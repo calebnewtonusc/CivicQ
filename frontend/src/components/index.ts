@@ -13,3 +13,8 @@ export { default as ErrorMessage } from './ErrorMessage';
 export { default as SuccessMessage } from './SuccessMessage';
 export { default as InfoMessage } from './InfoMessage';
 export { VideoAnswerRecorder } from './VideoAnswerRecorder';
+
+// SEO and Accessibility Components
+export { default as SEOHelmet } from './SEOHelmet';
+export { default as SkipLinks } from './SkipLinks';
+export { default as StructuredData } from './StructuredData';

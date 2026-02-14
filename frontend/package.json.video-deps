@@ -1,0 +1,9 @@
+{
+  "description": "Additional dependencies needed for video infrastructure",
+  "instructions": "Add these to your frontend/package.json dependencies",
+  "dependencies": {
+    "hls.js": "^1.5.8",
+    "axios": "^1.6.5"
+  },
+  "install_command": "npm install hls.js axios"
+}

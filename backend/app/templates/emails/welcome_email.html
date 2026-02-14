@@ -1,0 +1,44 @@
+{% extends "base_email.html" %}
+
+{% block title %}Welcome to CivicQ!{% endblock %}
+
+{% block content %}
+<h2>Welcome to CivicQ, {{ user_name }}!</h2>
+
+<p>Your account has been successfully created. We're thrilled to have you join our community of engaged citizens working to strengthen local democracy.</p>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ app_url }}" class="button">Get Started</a>
+</div>
+
+<hr class="divider">
+
+<h3 style="color: #667eea;">What You Can Do on CivicQ:</h3>
+
+<ul style="line-height: 2;">
+    <li><strong>Ask Questions</strong> - Submit questions to candidates and elected officials</li>
+    <li><strong>Vote & Engage</strong> - Upvote important questions from your community</li>
+    <li><strong>Watch Video Answers</strong> - See candidates respond directly to questions</li>
+    <li><strong>Stay Informed</strong> - Track your local ballot and important issues</li>
+    <li><strong>Follow Candidates</strong> - Get updates from candidates you care about</li>
+</ul>
+
+<hr class="divider">
+
+<h3 style="color: #667eea;">Next Steps:</h3>
+
+<ol style="line-height: 2;">
+    <li>Complete your profile to personalize your experience</li>
+    <li>Browse your local ballot and contests</li>
+    <li>Start asking questions or voting on existing ones</li>
+    <li>Follow candidates to stay updated</li>
+</ol>
+
+<hr class="divider">
+
+<p>If you have any questions or need help getting started, our support team is here to help at <a href="mailto:{{ support_email }}">{{ support_email }}</a></p>
+
+<p>Together, we're making democracy more transparent and accessible!</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

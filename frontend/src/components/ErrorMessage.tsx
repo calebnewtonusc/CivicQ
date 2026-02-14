@@ -3,11 +3,12 @@ import React from 'react';
 interface ErrorMessageProps {
   message: string;
   onRetry?: () => void;
+  className?: string;
 }
 
-const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, onRetry }) => {
+const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, onRetry, className = '' }) => {
   return (
-    <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+    <div className={`bg-red-50 border border-red-200 rounded-lg p-6 ${className}`}>
       <div className="flex items-start">
         <div className="flex-shrink-0">
           <svg
@@ -41,4 +42,5 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, onRetry }) => {
   );
 };
 
+export { ErrorMessage };
 export default ErrorMessage;

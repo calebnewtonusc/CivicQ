@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Layout } from '../components/Layout';
+import { Layout } from '../components';
 import { useAuthContext } from '../contexts/AuthContext';
-import { candidateAPI } from '../services/api';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { ErrorMessage } from '../components/ErrorMessage';
+import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
 
 interface DashboardStats {
   total_questions: number;
@@ -40,7 +39,6 @@ export default function CandidateDashboardPage() {
 
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [pendingQuestions, setPendingQuestions] = useState<PendingQuestion[]>([]);
-  const [candidateId, setCandidateId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -67,7 +65,6 @@ export default function CandidateDashboardPage() {
   const loadDashboardData = async (candidateId: number) => {
     try {
       setLoading(true);
-      setCandidateId(candidateId);
 
       // Load dashboard stats and pending questions in parallel
       const [statsData, questionsData] = await Promise.all([
@@ -98,7 +95,7 @@ export default function CandidateDashboardPage() {
     return (
       <Layout>
         <div className="flex justify-center items-center min-h-[60vh]">
-          <LoadingSpinner size="large" />
+          <LoadingSpinner size="lg" />
         </div>
       </Layout>
     );

@@ -25,7 +25,10 @@ from app.api import (
     candidates,
     moderation,
     admin,
+    cities,
+    videos,
 )
+from app.api.admin_moderation import router as admin_moderation_router
 from app.api.v1.endpoints import llm
 
 # Setup logging
@@ -105,7 +108,10 @@ app.include_router(contests.router, prefix="/api/contests", tags=["Contests"])
 app.include_router(questions.router, prefix="/api", tags=["Questions"])
 app.include_router(candidates.router, prefix="/api/candidates", tags=["Candidates"])
 app.include_router(moderation.router, prefix="/api", tags=["Moderation"])
-app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
+app.include_router(admin.router, prefix="/api/admin", tags=["Admin - Ballot Import"])
+app.include_router(admin_moderation_router, prefix="/api/admin", tags=["Admin - Moderation"])
+app.include_router(cities.router, prefix="/api", tags=["Cities"])
+app.include_router(videos.router, prefix="/api/videos", tags=["Videos"])
 app.include_router(llm.router, prefix="/api/v1/llm", tags=["AI Features"])
 
 

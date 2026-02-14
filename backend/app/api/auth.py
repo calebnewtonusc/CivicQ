@@ -19,6 +19,7 @@ from app.schemas.user import (
 )
 from app.services.auth_service import AuthService
 from app.core.security import get_current_user
+from app.core.rate_limit import RateLimiter
 
 router = APIRouter()
 
@@ -71,6 +72,8 @@ async def login(
     Authenticates a user with email and password.
     Returns an access token for subsequent requests.
 
+    Rate limit: 5 attempts per 15 minutes per email
+
     Args:
         login_data: Login credentials (email and password)
         db: Database session
@@ -81,14 +84,25 @@ async def login(
     Raises:
         HTTPException 401: If credentials are invalid
         HTTPException 403: If account is inactive
+        HTTPException 429: If rate limit exceeded
     """
-    user, access_token = AuthService.authenticate_user(db, login_data)
+    # Check login rate limit
+    RateLimiter.check_login_attempts(login_data.email)
 
-    return Token(
-        access_token=access_token,
-        token_type="bearer",
-        user=UserResponse.model_validate(user)
-    )
+    try:
+        user, access_token = AuthService.authenticate_user(db, login_data)
+
+        # Reset login attempts on successful login
+        RateLimiter.reset_login_attempts(login_data.email)
+
+        return Token(
+            access_token=access_token,
+            token_type="bearer",
+            user=UserResponse.model_validate(user)
+        )
+    except HTTPException:
+        # Don't reset on failed login
+        raise
 
 
 @router.post("/verify/start")

@@ -1,0 +1,31 @@
+{% extends "base_email.html" %}
+
+{% block title %}Your Verification Code - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ user_name }},</h2>
+
+<p>Your CivicQ two-factor authentication code is:</p>
+
+<div class="code-box">
+    <div class="code">{{ code }}</div>
+</div>
+
+<p style="text-align: center; color: #666; font-size: 14px;">Enter this code to complete your login</p>
+
+<div class="warning">
+    <strong>Security Notice:</strong> This code will expire in 10 minutes. Never share this code with anyone.
+</div>
+
+<hr class="divider">
+
+<p><strong>Didn't try to log in?</strong></p>
+<p>If you didn't attempt to access your account, someone may be trying to access it. We recommend:</p>
+<ul>
+    <li>Changing your password immediately</li>
+    <li>Reviewing your recent account activity</li>
+    <li>Contacting our support team if you see suspicious activity</li>
+</ul>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

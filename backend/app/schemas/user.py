@@ -71,3 +71,48 @@ class VerificationComplete(BaseModel):
     """Schema for completing verification"""
     code: str = Field(..., min_length=4, max_length=10)
     verification_id: str
+
+
+class PasswordResetRequest(BaseModel):
+    """Schema for requesting password reset"""
+    email: EmailStr
+
+
+class PasswordResetConfirm(BaseModel):
+    """Schema for confirming password reset"""
+    token: str
+    new_password: str = Field(..., min_length=8, max_length=100)
+
+
+class PasswordChange(BaseModel):
+    """Schema for changing password (authenticated users)"""
+    current_password: str
+    new_password: str = Field(..., min_length=8, max_length=100)
+
+
+class EmailVerificationRequest(BaseModel):
+    """Schema for requesting email verification"""
+    email: EmailStr
+
+
+class EmailVerificationConfirm(BaseModel):
+    """Schema for confirming email verification"""
+    token: str
+
+
+class TwoFactorSetup(BaseModel):
+    """Schema for 2FA setup response"""
+    secret: str
+    qr_code: str
+    backup_codes: list[str]
+
+
+class TwoFactorVerify(BaseModel):
+    """Schema for 2FA verification"""
+    code: str = Field(..., min_length=6, max_length=6)
+
+
+class TwoFactorEnable(BaseModel):
+    """Schema for enabling 2FA"""
+    code: str = Field(..., min_length=6, max_length=6)
+    secret: str

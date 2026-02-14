@@ -132,10 +132,18 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <Link
-                  to="/security"
+                  to="/cookies"
                   className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
                 >
-                  Security
+                  Cookie Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/dpa"
+                  className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Data Processing
                 </Link>
               </li>
             </ul>
