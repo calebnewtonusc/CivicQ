@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security Vulnerability
+    url: mailto:security@civicq.org
+    about: Please report security vulnerabilities privately via email
+  - name: General Questions
+    url: https://github.com/civicq/CivicQ/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: Documentation
+    url: https://github.com/civicq/CivicQ/blob/main/README.md
+    about: Read our documentation and setup guides

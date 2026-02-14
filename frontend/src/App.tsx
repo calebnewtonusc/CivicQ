@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from './contexts/AuthContext';
 
-// Pages (to be implemented)
+// Pages
 import HomePage from './pages/HomePage';
 import BallotPage from './pages/BallotPage';
 import ContestPage from './pages/ContestPage';
@@ -23,17 +24,19 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <div className="min-h-screen bg-gray-50">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/ballot" element={<BallotPage />} />
-            <Route path="/contest/:contestId" element={<ContestPage />} />
-            <Route path="/question/:questionId" element={<QuestionPage />} />
-            <Route path="/candidate/:candidateId" element={<CandidatePage />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <div className="min-h-screen bg-gray-50">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/ballot" element={<BallotPage />} />
+              <Route path="/contest/:contestId" element={<ContestPage />} />
+              <Route path="/question/:questionId" element={<QuestionPage />} />
+              <Route path="/candidate/:candidateId" element={<CandidatePage />} />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
