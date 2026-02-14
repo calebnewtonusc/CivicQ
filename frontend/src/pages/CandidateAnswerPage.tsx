@@ -6,7 +6,7 @@ import { VideoAnswerRecorder } from '../components/VideoAnswerRecorder';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || '${API_BASE_URL}';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 interface Question {
   id: number;

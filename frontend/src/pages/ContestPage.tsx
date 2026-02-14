@@ -83,7 +83,7 @@ const ContestPage: React.FC = () => {
   }
 
   // Defensive null checks for questions and candidates
-  const questions = Array.isArray(questionsData?.items) ? questionsData.items : [];
+  const questions = Array.isArray(questionsData?.items) ? (questionsData?.items ?? []) : [];
   const activeCandidates = Array.isArray(candidates)
     ? candidates.filter((c) => c && c.status === 'active')
     : [];

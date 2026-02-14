@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import SuccessMessage from '../components/SuccessMessage';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || '${API_BASE_URL}';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 // This interface is for internal use only
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
