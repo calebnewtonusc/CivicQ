@@ -15,6 +15,7 @@ const AuditLog: React.FC = () => {
 
   useEffect(() => {
     loadLogs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventTypeFilter, severityFilter]);
 
   const loadLogs = async () => {

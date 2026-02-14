@@ -31,7 +31,7 @@ const CitySetupWizardPage: React.FC = () => {
 
   useEffect(() => {
     fetchCity();
-  }, [cityId]);
+  }, [cityId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchCity = async () => {
     try {

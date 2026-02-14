@@ -27,7 +27,7 @@ const CityPendingVerificationPage: React.FC = () => {
     // Poll for status changes every 30 seconds
     const interval = setInterval(fetchCity, 30000);
     return () => clearInterval(interval);
-  }, [cityId]);
+  }, [cityId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchCity = async () => {
     try {

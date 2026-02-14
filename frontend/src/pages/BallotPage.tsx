@@ -286,7 +286,7 @@ const StatCard: React.FC<{
     <div className="flex items-center justify-between">
       <div className="flex-1">
         <p className="text-sm font-medium text-gray-600 mb-2">{label}</p>
-        <p className="text-4xl font-extrabold bg-gradient-to-r ${gradient} bg-clip-text text-transparent">
+        <p className={`text-4xl font-extrabold bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>
           {value}
         </p>
       </div>
