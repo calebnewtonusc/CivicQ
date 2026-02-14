@@ -21,12 +21,18 @@ export const useAuth = () => {
       try {
         return await authAPI.getCurrentUser();
       } catch (error) {
+        // Backend not available or token invalid - fail gracefully
+        console.warn('Auth check failed, likely backend unavailable:', error);
         localStorage.removeItem('access_token');
         localStorage.removeItem('user');
         return null;
       }
     },
     retry: false,
+    staleTime: Infinity, // Don't refetch automatically
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 
   // Login mutation
