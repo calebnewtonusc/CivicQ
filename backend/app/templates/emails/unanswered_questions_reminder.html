@@ -1,0 +1,102 @@
+{% extends "base_email.html" %}
+
+{% block title %}You Have Unanswered Questions - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ candidate_name }},</h2>
+
+<p>Voters in {{ city_name }} are waiting to hear from you! You currently have <strong>{{ unanswered_count }}</strong> unanswered question{{ unanswered_count|pluralize }} on CivicQ.</p>
+
+<div style="background-color: #fff3e0; border-left: 4px solid #ff9800; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #e65100;">Unanswered Questions</h3>
+    <p style="font-size: 20px; color: #333; margin: 0;">
+        <strong>{{ unanswered_count }}</strong> question{{ unanswered_count|pluralize }} awaiting your response
+    </p>
+</div>
+
+<a href="{{ answer_questions_url }}" class="button">Answer Questions</a>
+
+<hr class="divider">
+
+<h3>Top Priority Questions</h3>
+
+{% if top_questions %}
+{% for question in top_questions %}
+<div style="background-color: #fafafa; padding: 15px; margin: 15px 0; border-radius: 4px; border-left: 4px solid #667eea;">
+    <p style="margin: 0 0 10px 0;"><strong>{{ question.upvotes }} upvotes</strong> - {{ question.category }}</p>
+    <p style="margin: 0; color: #555; font-size: 15px; line-height: 1.6;">{{ question.text }}</p>
+    <p style="margin: 10px 0 0 0; font-size: 14px; color: #999;">Asked {{ question.days_ago }} days ago</p>
+</div>
+{% endfor %}
+{% endif %}
+
+<hr class="divider">
+
+<h3>Why Answering Matters</h3>
+
+<p>Responding to voter questions is one of the most effective ways to:</p>
+
+<ul>
+    <li><strong>Build Trust:</strong> Show voters you're accessible and accountable</li>
+    <li><strong>Earn Support:</strong> Candidates who respond get significantly more voter engagement</li>
+    <li><strong>Showcase Your Platform:</strong> Use questions to highlight your policy positions</li>
+    <li><strong>Stand Out:</strong> Differentiate yourself from candidates who don't engage</li>
+    <li><strong>Reach More Voters:</strong> Your answers are shared and can go viral in your community</li>
+</ul>
+
+<div style="background-color: #e3f2fd; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #2196f3;">
+    <p style="margin: 0;"><strong>Data Insight:</strong> Candidates who answer at least 80% of questions receive 2.5x more profile views and positive ratings from voters.</p>
+</div>
+
+<hr class="divider">
+
+<h3>Quick Tips for Great Answers</h3>
+
+<div style="background-color: #f5f5f5; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <ol style="margin: 0; padding-left: 20px;">
+        <li style="margin-bottom: 10px;"><strong>Be Specific:</strong> Provide concrete policy positions, not just platitudes</li>
+        <li style="margin-bottom: 10px;"><strong>Stay Focused:</strong> Directly address the question asked</li>
+        <li style="margin-bottom: 10px;"><strong>Use Examples:</strong> Share real-world examples or experiences</li>
+        <li style="margin-bottom: 10px;"><strong>Back It Up:</strong> Cite sources, data, or expert opinions when possible</li>
+        <li style="margin-bottom: 10px;"><strong>Add Video:</strong> Video responses generate 3x more engagement</li>
+        <li style="margin-bottom: 0;"><strong>Be Authentic:</strong> Voters value honesty over perfect answers</li>
+    </ol>
+</div>
+
+<hr class="divider">
+
+<h3>Your Election Timeline</h3>
+
+<p><strong>Election Date:</strong> {{ election_date }} ({{ days_until_election }} days away)</p>
+
+{% if days_until_election <= 30 %}
+<div class="warning" style="background-color: #ffebee; border-left: 4px solid #f44336; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <p style="margin: 0;"><strong>Time is Running Out!</strong> With only {{ days_until_election }} days until the election, it's critical to answer voter questions now.</p>
+</div>
+{% elif days_until_election <= 60 %}
+<div class="warning" style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <p style="margin: 0;"><strong>Election Approaching:</strong> You have {{ days_until_election }} days to connect with voters. Make your answers count!</p>
+</div>
+{% endif %}
+
+<hr class="divider">
+
+<h3>Need Help?</h3>
+
+<p>If you need assistance answering questions or using CivicQ:</p>
+
+<ul>
+    <li><a href="{{ candidate_guide_url }}">Candidate Guide</a> - Tips for effective responses</li>
+    <li><a href="{{ video_guide_url }}">Video Recording Guide</a> - How to record great video answers</li>
+    <li><a href="mailto:{{ support_email }}">Email Support</a> - Get help from our team</li>
+</ul>
+
+<p>Voters are waiting to hear from you. Take a few minutes today to answer their questions!</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+
+<p style="font-size: 14px; color: #666; margin-top: 30px;">
+    You're receiving this reminder because you have unanswered questions as a candidate on CivicQ.
+    <a href="{{ notification_settings_url }}">Update notification preferences</a>
+</p>
+{% endblock %}

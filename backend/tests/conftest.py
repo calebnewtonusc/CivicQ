@@ -3,29 +3,52 @@ Pytest configuration and fixtures for CivicQ backend tests.
 """
 
 import pytest
+import os
+from typing import Generator
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import StaticPool
 
 from app.main import app
 from app.models.base import Base
 from app.core.database import get_db
 
+# Import factories for easy access in tests
+from tests.fixtures.factories import (
+    UserFactory,
+    CityFactory,
+    QuestionFactory,
+    ContestFactory,
+    CandidateFactory,
+    VoteFactory,
+    VideoFactory,
+    ScenarioBuilder,
+)
+
 
 # Test database URL (in-memory SQLite for fast tests)
 SQLALCHEMY_TEST_DATABASE_URL = "sqlite:///:memory:"
 
-engine = create_engine(
-    SQLALCHEMY_TEST_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
+# For integration tests, optionally use PostgreSQL
+if os.getenv("USE_TEST_POSTGRES"):
+    SQLALCHEMY_TEST_DATABASE_URL = os.getenv(
+        "TEST_DATABASE_URL",
+        "postgresql://civicq_test:test@localhost/civicq_test"
+    )
+    engine = create_engine(SQLALCHEMY_TEST_DATABASE_URL)
+else:
+    engine = create_engine(
+        SQLALCHEMY_TEST_DATABASE_URL,
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 @pytest.fixture(scope="function")
-def db_session():
+def db_session() -> Generator[Session, None, None]:
     """Create a fresh database session for each test."""
     Base.metadata.create_all(bind=engine)
     session = TestingSessionLocal()
@@ -38,7 +61,7 @@ def db_session():
 
 
 @pytest.fixture(scope="function")
-def client(db_session):
+def client(db_session: Session) -> Generator[TestClient, None, None]:
     """Create a FastAPI test client with database override."""
 
     def override_get_db():
@@ -186,6 +209,114 @@ def mock_redis(monkeypatch):
         def flushdb(self):
             self.data.clear()
 
+        def exists(self, key):
+            return key in self.data
+
+        def expire(self, key, seconds):
+            return True
+
+        def incr(self, key):
+            self.data[key] = self.data.get(key, 0) + 1
+            return self.data[key]
+
     mock_redis_instance = MockRedis()
     monkeypatch.setattr("app.core.cache.redis_client", mock_redis_instance)
     return mock_redis_instance
+
+
+@pytest.fixture
+def test_user(db_session):
+    """Create a test user."""
+    return UserFactory.create_voter(db_session)
+
+
+@pytest.fixture
+def test_admin(db_session):
+    """Create a test admin user."""
+    return UserFactory.create_admin(db_session)
+
+
+@pytest.fixture
+def test_candidate(db_session):
+    """Create a test candidate user."""
+    return UserFactory.create_candidate(db_session)
+
+
+@pytest.fixture
+def test_city(db_session):
+    """Create a test city."""
+    return CityFactory.create(db_session)
+
+
+@pytest.fixture
+def test_contest(db_session, test_city):
+    """Create a test contest."""
+    return ContestFactory.create(db_session, city_id=test_city.slug)
+
+
+@pytest.fixture
+def auth_headers(client, test_user):
+    """Generate authentication headers for test user."""
+    from app.core.security import create_access_token
+
+    token = create_access_token({"sub": str(test_user.id), "email": test_user.email})
+    return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+def admin_headers(client, test_admin):
+    """Generate authentication headers for admin user."""
+    from app.core.security import create_access_token
+
+    token = create_access_token({"sub": str(test_admin.id), "email": test_admin.email})
+    return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+def mock_email_service(monkeypatch):
+    """Mock email service for testing."""
+    from unittest.mock import MagicMock
+
+    mock_service = MagicMock()
+    monkeypatch.setattr("app.services.email_service.email_service", mock_service)
+    return mock_service
+
+
+@pytest.fixture
+def mock_storage_service(monkeypatch):
+    """Mock storage service for testing."""
+    from unittest.mock import MagicMock
+
+    mock_service = MagicMock()
+    mock_service.upload_file.return_value = "https://storage.example.com/test.jpg"
+    monkeypatch.setattr("app.services.storage_service.storage_service", mock_service)
+    return mock_service
+
+
+@pytest.fixture
+def mock_video_service(monkeypatch):
+    """Mock video processing service for testing."""
+    from unittest.mock import MagicMock
+
+    mock_service = MagicMock()
+    monkeypatch.setattr("app.services.video_processing_service.video_service", mock_service)
+    return mock_service
+
+
+@pytest.fixture
+def mock_ballot_api(monkeypatch):
+    """Mock ballot API client for testing."""
+    from unittest.mock import MagicMock
+
+    mock_client = MagicMock()
+    mock_client.get_ballot_data.return_value = {
+        "contests": [
+            {
+                "title": "Mayor",
+                "type": "race",
+                "candidates": ["Alice Smith", "Bob Johnson"]
+            }
+        ]
+    }
+    monkeypatch.setattr("app.services.ballot_data_service.ballot_client", mock_client)
+    return mock_client

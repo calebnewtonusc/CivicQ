@@ -1,0 +1,46 @@
+{% extends "base_email.html" %}
+
+{% block title %}Question Submitted - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ user_name }},</h2>
+
+<p>Thank you for submitting your question to CivicQ! We've received your question and it's now under review.</p>
+
+<div style="background-color: #e8f5e9; border-left: 4px solid #4caf50; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #2e7d32;">Your Question</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;"><strong>For:</strong> {{ candidate_name }}</p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;"><strong>Category:</strong> {{ category }}</p>
+    <p style="font-size: 15px; color: #555; line-height: 1.6; border-top: 1px solid #c8e6c9; padding-top: 15px; margin-top: 15px;">
+        "{{ question_text }}"
+    </p>
+</div>
+
+<hr class="divider">
+
+<h3>What happens next?</h3>
+
+<div style="background-color: #f5f5f5; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <ol style="margin: 0; padding-left: 20px;">
+        <li style="margin-bottom: 15px;"><strong>Moderation Review:</strong> Our team will review your question to ensure it meets community guidelines (typically within 24 hours).</li>
+        <li style="margin-bottom: 15px;"><strong>Notification:</strong> You'll receive an email once your question is approved or if any changes are needed.</li>
+        <li style="margin-bottom: 15px;"><strong>Candidate Response:</strong> Approved questions will be sent to the candidate, and you'll be notified when they respond.</li>
+        <li style="margin-bottom: 0;"><strong>Community Voting:</strong> Other voters can upvote your question to show it matters to them too.</li>
+    </ol>
+</div>
+
+<a href="{{ question_url }}" class="button">View Your Question</a>
+
+<hr class="divider">
+
+<p><strong>Question Guidelines Reminder:</strong></p>
+<ul>
+    <li>Questions should be clear, respectful, and relevant to the position</li>
+    <li>Avoid personal attacks or inflammatory language</li>
+    <li>Focus on policy positions and qualifications</li>
+</ul>
+
+<p>Thank you for helping make our democracy more transparent and accountable!</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

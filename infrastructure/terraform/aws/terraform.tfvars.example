@@ -1,0 +1,70 @@
+# ============================================================================
+# CivicQ - AWS Terraform Variables (Example)
+# ============================================================================
+# Copy this file to terraform.tfvars and fill in your values
+# Command: cp terraform.tfvars.example terraform.tfvars
+#
+# IMPORTANT: Never commit terraform.tfvars to version control!
+# ============================================================================
+
+# General Configuration
+project_name = "civicq"
+environment  = "production"  # development, staging, or production
+aws_region   = "us-west-2"
+
+# VPC Configuration
+vpc_cidr             = "10.0.0.0/16"
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
+enable_nat_gateway   = true  # Set to false for dev to save costs
+
+# Database Configuration (RDS PostgreSQL)
+db_instance_class        = "db.t4g.small"  # Production: db.t4g.medium or larger
+db_allocated_storage     = 20
+db_max_allocated_storage = 100
+db_name                  = "civicq"
+db_username              = "civicq_admin"
+db_password              = "CHANGEME-generate-secure-password-min-16-chars"
+db_backup_retention_days = 7  # Production: 30
+
+# Redis Configuration (ElastiCache)
+redis_node_type      = "cache.t4g.small"  # Production: cache.t4g.medium
+redis_num_cache_nodes = 2                  # 1 for dev, 2+ for production (enables HA)
+redis_auth_token     = "CHANGEME-generate-secure-token-min-16-chars"
+
+# S3 and CloudFront
+cloudfront_price_class = "PriceClass_100"  # US, Canada, Europe
+cors_allowed_origins   = ["https://civicq.com", "https://www.civicq.com", "https://app.civicq.com"]
+
+# ECS Configuration
+ecs_backend_cpu          = 512   # 0.5 vCPU (Production: 1024-2048)
+ecs_backend_memory       = 1024  # 1 GB (Production: 2048-4096)
+ecs_backend_desired_count = 2     # Production: 3-5
+
+ecs_worker_cpu          = 512
+ecs_worker_memory       = 1024
+ecs_worker_desired_count = 2
+
+# Application Configuration
+app_secret_key = "CHANGEME-generate-with-openssl-rand-hex-32"
+frontend_url   = "https://civicq.com"
+backend_url    = "https://api.civicq.com"
+
+# Docker Images (ECR or Docker Hub)
+docker_image_backend  = "123456789012.dkr.ecr.us-west-2.amazonaws.com/civicq-backend:latest"
+docker_image_frontend = "123456789012.dkr.ecr.us-west-2.amazonaws.com/civicq-frontend:latest"
+
+# Domain and SSL
+domain_name         = "civicq.com"
+acm_certificate_arn = "arn:aws:acm:us-west-2:123456789012:certificate/abcd1234-..."
+
+# Monitoring
+enable_container_insights = true
+log_retention_days        = 7  # Production: 30
+
+# Additional Tags
+additional_tags = {
+  Owner       = "Engineering Team"
+  CostCenter  = "Platform"
+  Compliance  = "GDPR"
+}

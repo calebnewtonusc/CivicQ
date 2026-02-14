@@ -1,0 +1,138 @@
+{% extends "base_email.html" %}
+
+{% block title %}Weekly Digest - {{ city_name }} - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ staff_name }},</h2>
+
+<p>Here's your weekly activity summary for {{ city_name }} on CivicQ.</p>
+
+<div style="background-color: #e3f2fd; border-left: 4px solid #2196f3; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #1565c0;">Week of {{ week_start_date }} - {{ week_end_date }}</h3>
+    <p style="font-size: 16px; color: #333; margin: 0;">{{ city_name }}, {{ state }}</p>
+</div>
+
+<hr class="divider">
+
+<h3>Activity Overview</h3>
+
+<div style="background-color: #f5f5f5; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><strong>New Questions</strong></td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #ddd; text-align: right; color: #2196f3; font-size: 20px; font-weight: bold;">{{ new_questions }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><strong>New Answers</strong></td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #ddd; text-align: right; color: #4caf50; font-size: 20px; font-weight: bold;">{{ new_answers }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><strong>New Voters</strong></td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #ddd; text-align: right; color: #9c27b0; font-size: 20px; font-weight: bold;">{{ new_voters }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><strong>Total Votes Cast</strong></td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #ddd; text-align: right; color: #ff9800; font-size: 20px; font-weight: bold;">{{ total_votes }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px 0;"><strong>Active Candidates</strong></td>
+            <td style="padding: 10px 0; text-align: right; color: #607d8b; font-size: 20px; font-weight: bold;">{{ active_candidates }}</td>
+        </tr>
+    </table>
+</div>
+
+<a href="{{ dashboard_url }}" class="button">View Full Dashboard</a>
+
+<hr class="divider">
+
+<h3>Top Questions This Week</h3>
+
+{% if top_questions %}
+{% for question in top_questions %}
+<div style="background-color: #fafafa; padding: 15px; margin: 15px 0; border-radius: 4px; border-left: 4px solid #667eea;">
+    <p style="margin: 0 0 10px 0;"><strong>For {{ question.candidate_name }}</strong> ({{ question.upvotes }} upvotes)</p>
+    <p style="margin: 0; color: #555; font-size: 15px;">{{ question.text }}</p>
+    {% if question.answered %}
+    <p style="margin: 10px 0 0 0; color: #4caf50; font-size: 14px;">Answered</p>
+    {% else %}
+    <p style="margin: 10px 0 0 0; color: #ff9800; font-size: 14px;">Awaiting Answer</p>
+    {% endif %}
+</div>
+{% endfor %}
+{% else %}
+<p>No questions were submitted this week.</p>
+{% endif %}
+
+<hr class="divider">
+
+{% if pending_moderation > 0 %}
+<h3>Action Required: Pending Moderation</h3>
+
+<div class="warning" style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="font-size: 16px; color: #333; margin: 0;">
+        <strong>{{ pending_moderation }}</strong> items are waiting for moderation review.
+    </p>
+</div>
+
+<a href="{{ moderation_url }}" class="button">Review Pending Items</a>
+
+<hr class="divider">
+{% endif %}
+
+{% if unanswered_questions > 0 %}
+<h3>Candidate Engagement</h3>
+
+<div style="background-color: #fff3e0; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #ff9800;">
+    <p style="margin: 0;"><strong>{{ unanswered_questions }}</strong> questions are still unanswered. Consider sending reminders to candidates.</p>
+</div>
+
+<hr class="divider">
+{% endif %}
+
+<h3>Upcoming Elections</h3>
+
+{% if upcoming_elections %}
+<ul>
+    {% for election in upcoming_elections %}
+    <li><strong>{{ election.name }}</strong> - {{ election.date }} ({{ election.days_until }} days)</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No upcoming elections scheduled. <a href="{{ add_election_url }}">Add an election</a></p>
+{% endif %}
+
+<hr class="divider">
+
+<h3>Engagement Trends</h3>
+
+<p>Compared to last week:</p>
+
+<ul>
+    <li>Questions: {% if questions_trend > 0 %}+{% endif %}{{ questions_trend }}%</li>
+    <li>Answers: {% if answers_trend > 0 %}+{% endif %}{{ answers_trend }}%</li>
+    <li>New Voters: {% if voters_trend > 0 %}+{% endif %}{{ voters_trend }}%</li>
+    <li>Engagement: {% if engagement_trend > 0 %}+{% endif %}{{ engagement_trend }}%</li>
+</ul>
+
+<div style="background-color: #e8f5e9; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #4caf50;">
+    <p style="margin: 0;"><strong>Pro Tip:</strong> Promote CivicQ through your city's social media and website to increase voter participation!</p>
+</div>
+
+<hr class="divider">
+
+<h3>Quick Actions</h3>
+
+<ul>
+    <li><a href="{{ dashboard_url }}">View Full Dashboard</a></li>
+    <li><a href="{{ moderation_url }}">Moderate Content</a></li>
+    <li><a href="{{ analytics_url }}">View Detailed Analytics</a></li>
+    <li><a href="{{ settings_url }}">Update City Settings</a></li>
+</ul>
+
+<p style="font-size: 14px; color: #666; margin-top: 30px;">
+    You're receiving this weekly digest as a CivicQ admin for {{ city_name }}.
+    <a href="{{ unsubscribe_url }}">Unsubscribe from weekly digests</a>
+</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

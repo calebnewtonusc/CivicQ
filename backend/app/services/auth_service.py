@@ -55,12 +55,21 @@ class AuthService:
             full_name=user_data.full_name,
             city_name=user_data.city,
             role=UserRole.VOTER,
-            verification_status=VerificationStatus.PENDING
+            verification_status=VerificationStatus.PENDING,
+            email_verified=False
         )
 
         db.add(user)
         db.commit()
         db.refresh(user)
+
+        # Auto-send email verification
+        try:
+            AuthService.request_email_verification(db, user)
+        except Exception as e:
+            # Don't fail user creation if email fails
+            from app.core.logging_config import logger
+            logger.error(f"Failed to send verification email to {user.email}: {str(e)}")
 
         return user
 

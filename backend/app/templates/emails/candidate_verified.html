@@ -1,0 +1,114 @@
+{% extends "base_email.html" %}
+
+{% block title %}Candidate Profile Verified - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ candidate_name }},</h2>
+
+<p>Congratulations! Your candidate profile has been verified and is now live on CivicQ.</p>
+
+<div style="background-color: #e8f5e9; border-left: 4px solid #4caf50; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #2e7d32;">Profile Verified</h3>
+    <p style="font-size: 18px; color: #333; margin-bottom: 10px;">
+        <strong>{{ candidate_name }}</strong>
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        Candidate for <strong>{{ position }}</strong>
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        {{ city_name }}, {{ state }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 0;">
+        Election: {{ election_date }}
+    </p>
+</div>
+
+<a href="{{ profile_url }}" class="button">View Your Profile</a>
+
+<hr class="divider">
+
+<h3>What's Next?</h3>
+
+<p>Now that you're verified, voters in {{ city_name }} can:</p>
+
+<ul>
+    <li>Ask you questions about your platform and qualifications</li>
+    <li>View and share your responses</li>
+    <li>Upvote questions they want answered</li>
+    <li>Compare your answers with other candidates</li>
+</ul>
+
+<div style="background-color: #e3f2fd; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #2196f3;">
+    <p style="margin: 0;"><strong>First Steps:</strong> Complete your profile, add your platform positions, and be ready to answer voter questions!</p>
+</div>
+
+<hr class="divider">
+
+<h3>Optimize Your Profile</h3>
+
+<p>Make a great first impression by completing these sections:</p>
+
+<div style="background-color: #f5f5f5; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <ul style="margin: 0; padding-left: 20px;">
+        <li style="margin-bottom: 10px;"><strong>Profile Photo:</strong> Upload a professional headshot</li>
+        <li style="margin-bottom: 10px;"><strong>Bio:</strong> Write a compelling 2-3 paragraph biography</li>
+        <li style="margin-bottom: 10px;"><strong>Platform Positions:</strong> Add your stance on key issues</li>
+        <li style="margin-bottom: 10px;"><strong>Experience:</strong> Highlight relevant experience and qualifications</li>
+        <li style="margin-bottom: 10px;"><strong>Website & Social:</strong> Link to your campaign website and social media</li>
+        <li style="margin-bottom: 0;"><strong>Video Introduction:</strong> Record a brief introduction video (highly recommended)</li>
+    </ul>
+</div>
+
+<hr class="divider">
+
+<h3>Answering Questions Effectively</h3>
+
+<p>Stand out by providing thoughtful, comprehensive responses:</p>
+
+<ul>
+    <li><strong>Be Prompt:</strong> Answer questions within 48 hours for best engagement</li>
+    <li><strong>Be Specific:</strong> Provide concrete policy positions and examples</li>
+    <li><strong>Use Video:</strong> Video answers get 3x more engagement than text-only</li>
+    <li><strong>Cite Sources:</strong> Back up claims with facts and data</li>
+    <li><strong>Be Authentic:</strong> Voters appreciate genuine, honest responses</li>
+</ul>
+
+<div style="background-color: #fff3e0; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #ff9800;">
+    <p style="margin: 0;"><strong>Pro Tip:</strong> Candidates who answer at least 80% of questions receive significantly more voter support and positive ratings!</p>
+</div>
+
+<hr class="divider">
+
+<h3>Campaign Resources</h3>
+
+<p>Access these tools to maximize your impact:</p>
+
+<ul>
+    <li><a href="{{ dashboard_url }}">Candidate Dashboard</a> - Track questions, engagement, and analytics</li>
+    <li><a href="{{ candidate_guide_url }}">Candidate Guide</a> - Best practices for using CivicQ</li>
+    <li><a href="{{ video_guide_url }}">Video Recording Guide</a> - Tips for great video responses</li>
+    <li><a href="{{ promote_url }}">Promotion Tools</a> - Share your profile with voters</li>
+</ul>
+
+<hr class="divider">
+
+<h3>Spread the Word</h3>
+
+<p>Let voters know you're on CivicQ! Share your profile:</p>
+
+<ul>
+    <li>On your campaign website</li>
+    <li>Across social media (Facebook, Twitter, Instagram)</li>
+    <li>In campaign emails and newsletters</li>
+    <li>At campaign events and meet-and-greets</li>
+    <li>In voter guides and campaign materials</li>
+</ul>
+
+<div style="background-color: #e8f5e9; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #4caf50;">
+    <p style="margin: 0;"><strong>Your Profile URL:</strong> <a href="{{ profile_url }}">{{ profile_url }}</a></p>
+</div>
+
+<p>Good luck with your campaign! We're excited to help you connect with voters in {{ city_name }}.</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

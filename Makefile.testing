@@ -1,0 +1,137 @@
+# CivicQ Testing Makefile
+# Provides convenient commands for running all tests
+
+.PHONY: help test test-backend test-frontend test-e2e coverage clean
+
+help:
+	@echo "CivicQ Testing Commands"
+	@echo ""
+	@echo "Main Commands:"
+	@echo "  make test              - Run all tests (backend, frontend, e2e)"
+	@echo "  make test-backend      - Run backend tests only"
+	@echo "  make test-frontend     - Run frontend tests only"
+	@echo "  make test-e2e          - Run E2E tests only"
+	@echo "  make coverage          - Generate coverage reports"
+	@echo "  make clean             - Clean test artifacts and coverage"
+	@echo ""
+	@echo "Backend Commands:"
+	@echo "  make test-backend-unit       - Run backend unit tests"
+	@echo "  make test-backend-api        - Run backend API tests"
+	@echo "  make test-backend-integration - Run backend integration tests"
+	@echo "  make test-backend-fast       - Run backend tests (skip slow)"
+	@echo "  make test-backend-watch      - Run backend tests in watch mode"
+	@echo ""
+	@echo "Frontend Commands:"
+	@echo "  make test-frontend-watch     - Run frontend tests in watch mode"
+	@echo "  make test-frontend-update    - Update frontend snapshots"
+	@echo ""
+	@echo "E2E Commands:"
+	@echo "  make test-e2e-headed        - Run E2E tests with browser visible"
+	@echo "  make test-e2e-debug         - Run E2E tests in debug mode"
+	@echo "  make test-e2e-chromium      - Run E2E tests on Chromium only"
+	@echo ""
+	@echo "Coverage Commands:"
+	@echo "  make coverage-backend       - Generate backend coverage report"
+	@echo "  make coverage-frontend      - Generate frontend coverage report"
+	@echo "  make coverage-report        - Open coverage reports in browser"
+
+# Run all tests
+test: test-backend test-frontend test-e2e
+	@echo "All tests completed!"
+
+# Backend tests
+test-backend:
+	@echo "Running backend tests..."
+	cd backend && pytest --cov=app --cov-report=html --cov-report=term
+
+test-backend-unit:
+	@echo "Running backend unit tests..."
+	cd backend && pytest tests/unit -v
+
+test-backend-api:
+	@echo "Running backend API tests..."
+	cd backend && pytest tests/api -v
+
+test-backend-integration:
+	@echo "Running backend integration tests..."
+	cd backend && pytest tests/integration -v
+
+test-backend-fast:
+	@echo "Running backend tests (skipping slow)..."
+	cd backend && pytest -m "not slow"
+
+test-backend-watch:
+	@echo "Running backend tests in watch mode..."
+	cd backend && ptw
+
+# Frontend tests
+test-frontend:
+	@echo "Running frontend tests..."
+	cd frontend && npm test -- --coverage --watchAll=false
+
+test-frontend-watch:
+	@echo "Running frontend tests in watch mode..."
+	cd frontend && npm test
+
+test-frontend-update:
+	@echo "Updating frontend snapshots..."
+	cd frontend && npm test -- -u
+
+# E2E tests
+test-e2e:
+	@echo "Running E2E tests..."
+	cd e2e && npx playwright test
+
+test-e2e-headed:
+	@echo "Running E2E tests (headed)..."
+	cd e2e && npx playwright test --headed
+
+test-e2e-debug:
+	@echo "Running E2E tests (debug mode)..."
+	cd e2e && npx playwright test --debug
+
+test-e2e-chromium:
+	@echo "Running E2E tests on Chromium..."
+	cd e2e && npx playwright test --project=chromium
+
+test-e2e-ui:
+	@echo "Running E2E tests with UI..."
+	cd e2e && npx playwright test --ui
+
+# Coverage
+coverage: coverage-backend coverage-frontend
+
+coverage-backend:
+	@echo "Generating backend coverage report..."
+	cd backend && pytest --cov=app --cov-report=html --cov-report=xml
+
+coverage-frontend:
+	@echo "Generating frontend coverage report..."
+	cd frontend && npm test -- --coverage --watchAll=false
+
+coverage-report:
+	@echo "Opening coverage reports..."
+	open backend/htmlcov/index.html
+	open frontend/coverage/lcov-report/index.html
+
+# Clean
+clean:
+	@echo "Cleaning test artifacts..."
+	rm -rf backend/htmlcov backend/.coverage backend/.pytest_cache backend/coverage.xml
+	rm -rf frontend/coverage
+	rm -rf e2e/test-results e2e/playwright-report
+	find . -type d -name __pycache__ -exec rm -rf {} +
+	find . -type d -name .pytest_cache -exec rm -rf {} +
+	@echo "Clean complete!"
+
+# Setup
+setup-tests:
+	@echo "Setting up test environment..."
+	cd backend && pip install -r requirements.txt
+	cd frontend && npm install
+	cd e2e && npm install && npx playwright install
+	@echo "Test environment ready!"
+
+# CI simulation
+test-ci: clean test coverage
+	@echo "CI tests completed!"

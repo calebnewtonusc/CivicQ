@@ -1,0 +1,76 @@
+{% extends "base_email.html" %}
+
+{% block title %}Content Removed - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ user_name }},</h2>
+
+<p>We're writing to inform you that your content on CivicQ has been removed for violating our community guidelines.</p>
+
+<div class="warning" style="background-color: #ffebee; border-left: 4px solid #f44336; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #c62828;">Content Removed</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Content Type:</strong> {{ content_type }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Reason:</strong> {{ removal_reason }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Date:</strong> {{ removal_date }}
+    </p>
+</div>
+
+<div style="background-color: #f5f5f5; border: 1px solid #ddd; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #333;">Removed Content</h3>
+    <p style="font-size: 15px; color: #555; line-height: 1.6; white-space: pre-wrap;">{{ content_text }}</p>
+</div>
+
+<hr class="divider">
+
+<h3>Community Guidelines Violated</h3>
+
+<p>{{ violation_details }}</p>
+
+<p>Our community guidelines require that all content:</p>
+<ul>
+    <li>Be respectful and civil in tone</li>
+    <li>Avoid personal attacks or harassment</li>
+    <li>Stay on-topic and relevant to civic engagement</li>
+    <li>Be free from profanity, hate speech, or threats</li>
+    <li>Not contain spam, misinformation, or deceptive content</li>
+</ul>
+
+<hr class="divider">
+
+<h3>What This Means for You</h3>
+
+<p>This is {% if is_first_violation %}your first{% elif is_second_violation %}your second{% else %}a repeated{% endif %} violation of our community guidelines.</p>
+
+{% if is_first_violation %}
+<div style="background-color: #fff3e0; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #ff9800;">
+    <p style="margin: 0;"><strong>Warning:</strong> Future violations may result in account suspension or permanent ban. Please review our community guidelines carefully.</p>
+</div>
+{% else %}
+<div class="warning" style="background-color: #ffebee; border-left: 4px solid #f44336; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <p style="margin: 0;"><strong>Final Warning:</strong> Additional violations will result in account suspension or permanent ban from CivicQ.</p>
+</div>
+{% endif %}
+
+<a href="{{ guidelines_url }}" class="button">Review Community Guidelines</a>
+
+<hr class="divider">
+
+<h3>Appeal This Decision</h3>
+
+<p>If you believe this content was removed in error, you have the right to appeal this decision within 7 days. Please contact our support team with:</p>
+
+<ul>
+    <li>Your explanation of why the content should not have been removed</li>
+    <li>Any relevant context or information</li>
+    <li>Reference to specific community guidelines you believe support your case</li>
+</ul>
+
+<p>We take community standards seriously and appreciate your cooperation in maintaining a respectful platform for civic engagement.</p>
+
+<p>Best regards,<br>The CivicQ Moderation Team</p>
+{% endblock %}

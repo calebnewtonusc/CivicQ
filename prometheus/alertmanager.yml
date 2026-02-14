@@ -1,0 +1,159 @@
+# AlertManager Configuration for CivicQ
+# Defines how alerts are routed and delivered
+
+global:
+  # Default notification settings
+  resolve_timeout: 5m
+  # SMTP settings for email alerts
+  smtp_from: 'alerts@civicq.com'
+  smtp_smarthost: '${SMTP_HOST}:${SMTP_PORT}'
+  smtp_auth_username: '${SMTP_USER}'
+  smtp_auth_password: '${SMTP_PASSWORD}'
+  smtp_require_tls: true
+
+# Templates for notifications
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+# Route tree for alerts
+route:
+  # Default receiver for all alerts
+  receiver: 'default'
+
+  # Group alerts by these labels
+  group_by: ['alertname', 'cluster', 'service']
+
+  # Wait time before sending initial notification
+  group_wait: 10s
+
+  # Wait time before sending notification about new alerts in same group
+  group_interval: 10s
+
+  # Wait time before re-sending an alert
+  repeat_interval: 12h
+
+  # Child routes
+  routes:
+    # Critical alerts - send to PagerDuty and Slack immediately
+    - match:
+        severity: critical
+      receiver: 'critical-alerts'
+      group_wait: 10s
+      group_interval: 5m
+      repeat_interval: 3h
+      continue: true  # Also send to default receiver
+
+    # Warning alerts - send to Slack only
+    - match:
+        severity: warning
+      receiver: 'warning-alerts'
+      group_wait: 30s
+      group_interval: 10m
+      repeat_interval: 12h
+
+    # Business alerts - send to business team
+    - match:
+        component: business
+      receiver: 'business-team'
+      group_wait: 1m
+      group_interval: 30m
+      repeat_interval: 24h
+
+# Inhibition rules - suppress alerts when other alerts are firing
+inhibit_rules:
+  # If service is down, don't alert on high error rate
+  - source_match:
+      severity: 'critical'
+      alertname: 'ServiceDown'
+    target_match:
+      severity: 'warning'
+    equal: ['instance', 'job']
+
+  # If database is down, don't alert on database-related warnings
+  - source_match:
+      severity: 'critical'
+      component: 'database'
+    target_match:
+      severity: 'warning'
+      component: 'database'
+    equal: ['instance']
+
+# Receivers - notification destinations
+receivers:
+  # Default receiver - email to ops team
+  - name: 'default'
+    email_configs:
+      - to: 'ops@civicq.com'
+        send_resolved: true
+        headers:
+          Subject: '[CivicQ Alert] {{ .GroupLabels.alertname }}'
+
+  # Critical alerts - PagerDuty + Slack + Email
+  - name: 'critical-alerts'
+    pagerduty_configs:
+      - service_key: '${PAGERDUTY_SERVICE_KEY}'
+        description: '{{ .GroupLabels.alertname }}: {{ .CommonAnnotations.summary }}'
+        severity: 'critical'
+        details:
+          firing: '{{ .Alerts.Firing | len }}'
+          resolved: '{{ .Alerts.Resolved | len }}'
+          description: '{{ .CommonAnnotations.description }}'
+
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '#civicq-alerts-critical'
+        username: 'CivicQ Alertmanager'
+        color: 'danger'
+        title: 'CRITICAL: {{ .GroupLabels.alertname }}'
+        text: |-
+          {{ range .Alerts }}
+          *Alert:* {{ .Annotations.summary }}
+          *Description:* {{ .Annotations.description }}
+          *Severity:* {{ .Labels.severity }}
+          *Component:* {{ .Labels.component }}
+          {{ end }}
+        send_resolved: true
+
+    email_configs:
+      - to: 'oncall@civicq.com,ops@civicq.com'
+        send_resolved: true
+        headers:
+          Subject: 'CRITICAL: [CivicQ Alert] {{ .GroupLabels.alertname }}'
+
+  # Warning alerts - Slack only
+  - name: 'warning-alerts'
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '#civicq-alerts-warning'
+        username: 'CivicQ Alertmanager'
+        color: 'warning'
+        title: 'WARNING: {{ .GroupLabels.alertname }}'
+        text: |-
+          {{ range .Alerts }}
+          *Alert:* {{ .Annotations.summary }}
+          *Description:* {{ .Annotations.description }}
+          *Severity:* {{ .Labels.severity }}
+          *Component:* {{ .Labels.component }}
+          {{ end }}
+        send_resolved: true
+
+  # Business team alerts
+  - name: 'business-team'
+    email_configs:
+      - to: 'product@civicq.com,analytics@civicq.com'
+        send_resolved: true
+        headers:
+          Subject: '[CivicQ Business Alert] {{ .GroupLabels.alertname }}'
+
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '#civicq-analytics'
+        username: 'CivicQ Alertmanager'
+        color: 'warning'
+        title: 'Business Alert: {{ .GroupLabels.alertname }}'
+        text: |-
+          {{ range .Alerts }}
+          *Alert:* {{ .Annotations.summary }}
+          *Description:* {{ .Annotations.description }}
+          {{ end }}
+        send_resolved: true

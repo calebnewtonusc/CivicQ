@@ -1,0 +1,130 @@
+{% extends "base_email.html" %}
+
+{% block title %}Election in 7 Days - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ user_name }},</h2>
+
+<p>Your local election is just <strong>7 days away</strong>! Make sure you're prepared to vote.</p>
+
+<div style="background-color: #fff3e0; border-left: 4px solid #ff9800; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #e65100;">Election Alert</h3>
+    <p style="font-size: 20px; color: #333; margin-bottom: 10px; font-weight: bold;">
+        {{ election_name }}
+    </p>
+    <p style="font-size: 18px; color: #333; margin-bottom: 10px;">
+        <strong>{{ election_date }}</strong>
+    </p>
+    <p style="font-size: 16px; color: #333; margin: 0;">
+        {{ city_name }}, {{ state }}
+    </p>
+</div>
+
+<a href="{{ election_url }}" class="button">View Election Info</a>
+
+<hr class="divider">
+
+<h3>What's on Your Ballot</h3>
+
+{% if ballot_items %}
+<div style="background-color: #f5f5f5; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    {% for item in ballot_items %}
+    <div style="padding: 15px 0; {% if not loop.last %}border-bottom: 1px solid #ddd;{% endif %}">
+        <h4 style="margin: 0 0 10px 0; color: #333;">{{ item.position }}</h4>
+        <p style="margin: 0 0 5px 0; color: #555;">{{ item.candidates_count }} candidate{{ item.candidates_count|pluralize }}</p>
+        <p style="margin: 0;">
+            <a href="{{ item.url }}" style="color: #667eea; text-decoration: none;">Compare candidates →</a>
+        </p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<hr class="divider">
+
+<h3>Prepare to Vote</h3>
+
+<div style="background-color: #e3f2fd; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <h4 style="margin-top: 0;">Voting Checklist</h4>
+    <ul style="margin-bottom: 0; padding-left: 20px;">
+        <li style="margin-bottom: 10px;"><strong>Verify Registration:</strong> Confirm you're registered at <a href="{{ voter_registration_url }}">{{ voter_registration_url }}</a></li>
+        <li style="margin-bottom: 10px;"><strong>Find Your Polling Place:</strong> <a href="{{ polling_place_url }}">Locate your polling location</a></li>
+        <li style="margin-bottom: 10px;"><strong>Know the Hours:</strong> Polls open {{ poll_open_time }} - {{ poll_close_time }}</li>
+        <li style="margin-bottom: 10px;"><strong>Bring ID:</strong> {% if id_required %}Valid photo ID required{% else %}ID recommended but not required{% endif %}</li>
+        <li style="margin-bottom: 0;"><strong>Review the Ballot:</strong> Research candidates and measures before you vote</li>
+    </ul>
+</div>
+
+<hr class="divider">
+
+<h3>Your Questions Got Answered</h3>
+
+{% if your_answered_questions %}
+<p>Candidates have answered {{ your_answered_questions|length }} of your question{{ your_answered_questions|length|pluralize }}:</p>
+
+{% for question in your_answered_questions %}
+<div style="background-color: #e8f5e9; padding: 15px; margin: 15px 0; border-radius: 4px; border-left: 4px solid #4caf50;">
+    <p style="margin: 0 0 10px 0;"><strong>{{ question.candidate_name }}</strong> answered:</p>
+    <p style="margin: 0; color: #555; font-size: 15px;">"{{ question.text|truncate(80) }}"</p>
+    <a href="{{ question.url }}" style="color: #667eea; text-decoration: none; font-size: 14px;">View answer →</a>
+</div>
+{% endfor %}
+
+{% else %}
+<p>You haven't asked any questions yet. <a href="{{ ask_question_url }}">Ask candidates</a> before election day!</p>
+{% endif %}
+
+<hr class="divider">
+
+<h3>Compare Candidates</h3>
+
+<p>Make an informed decision by comparing how candidates answered key questions:</p>
+
+<ul>
+    {% for position in positions %}
+    <li><a href="{{ position.compare_url }}">Compare {{ position.name }} candidates</a> ({{ position.candidates_count }} running)</li>
+    {% endfor %}
+</ul>
+
+<a href="{{ all_candidates_url }}" class="button">View All Candidates</a>
+
+<hr class="divider">
+
+<h3>Early Voting & Absentee</h3>
+
+{% if early_voting_available %}
+<div style="background-color: #e8f5e9; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #4caf50;">
+    <h4 style="margin-top: 0;">Early Voting Available</h4>
+    <p style="margin: 0 0 10px 0;"><strong>Dates:</strong> {{ early_voting_start }} - {{ early_voting_end }}</p>
+    <p style="margin: 0 0 10px 0;"><strong>Hours:</strong> {{ early_voting_hours }}</p>
+    <p style="margin: 0;"><a href="{{ early_voting_url }}">Find early voting locations</a></p>
+</div>
+{% endif %}
+
+{% if absentee_deadline %}
+<div class="warning" style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <p style="margin: 0;"><strong>Absentee Ballot Deadline:</strong> {{ absentee_deadline }} - <a href="{{ absentee_url }}">Request your ballot</a></p>
+</div>
+{% endif %}
+
+<hr class="divider">
+
+<h3>Stay Informed</h3>
+
+<p>In the final week before the election:</p>
+
+<ul>
+    <li><a href="{{ browse_questions_url }}">Review all candidate answers</a> on CivicQ</li>
+    <li><a href="{{ voter_guide_url }}">Download the voter guide</a> for {{ city_name }}</li>
+    <li><a href="{{ share_url }}">Share CivicQ</a> with friends and family</li>
+    <li>Attend any final candidate forums or debates</li>
+</ul>
+
+<div style="background-color: #e3f2fd; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #2196f3;">
+    <p style="margin: 0;"><strong>Remember:</strong> Every vote counts. Make your voice heard on {{ election_date }}!</p>
+</div>
+
+<p>Your participation makes democracy stronger. See you at the polls!</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

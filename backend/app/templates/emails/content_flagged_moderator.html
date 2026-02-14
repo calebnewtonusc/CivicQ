@@ -1,0 +1,57 @@
+{% extends "base_email.html" %}
+
+{% block title %}Content Flagged for Review - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ moderator_name }},</h2>
+
+<p>A piece of content has been flagged for moderation review on CivicQ.</p>
+
+<div class="warning" style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #856404;">Flagged Content Details</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Content Type:</strong> {{ content_type }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Author:</strong> {{ author_name }} ({{ author_email }})
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Flag Reason:</strong> {{ flag_reason }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Number of Reports:</strong> {{ report_count }}
+    </p>
+    {% if ai_toxicity_score %}
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>AI Toxicity Score:</strong> {{ ai_toxicity_score }}%
+    </p>
+    {% endif %}
+</div>
+
+<div style="background-color: #f5f5f5; border: 1px solid #ddd; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #333;">Content Text</h3>
+    <p style="font-size: 15px; color: #555; line-height: 1.6; white-space: pre-wrap;">{{ content_text }}</p>
+</div>
+
+<a href="{{ moderation_url }}" class="button">Review Content</a>
+
+<hr class="divider">
+
+<h3>Moderation Actions Available</h3>
+
+<ul>
+    <li><strong>Approve:</strong> Mark as compliant with community guidelines</li>
+    <li><strong>Remove:</strong> Delete the content and notify the author</li>
+    <li><strong>Warn User:</strong> Issue a warning to the author</li>
+    <li><strong>Suspend User:</strong> Temporarily suspend the author's account</li>
+    <li><strong>Ban User:</strong> Permanently ban the author from the platform</li>
+</ul>
+
+<div style="background-color: #e3f2fd; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #2196f3;">
+    <p style="margin: 0;"><strong>Reminder:</strong> Please review content fairly and consistently according to our community guidelines. All moderation actions are logged and can be audited.</p>
+</div>
+
+<p>Thank you for keeping CivicQ a safe and respectful community!</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

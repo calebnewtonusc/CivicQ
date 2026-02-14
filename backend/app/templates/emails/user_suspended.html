@@ -1,0 +1,91 @@
+{% extends "base_email.html" %}
+
+{% block title %}Account Suspended - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ user_name }},</h2>
+
+<p>Your CivicQ account has been temporarily suspended due to violations of our community guidelines.</p>
+
+<div class="warning" style="background-color: #ffebee; border-left: 4px solid #f44336; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #c62828;">Suspension Notice</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Suspension Duration:</strong> {{ suspension_duration }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Suspension Ends:</strong> {{ suspension_end_date }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Reason:</strong> {{ suspension_reason }}
+    </p>
+</div>
+
+<h3>What This Means</h3>
+
+<p>During your suspension period, you will not be able to:</p>
+
+<ul>
+    <li>Submit new questions</li>
+    <li>Vote on questions or answers</li>
+    <li>Post answers (if you're a candidate)</li>
+    <li>Comment or engage with content</li>
+    <li>Access certain platform features</li>
+</ul>
+
+<p>You will still be able to:</p>
+<ul>
+    <li>Log in to your account</li>
+    <li>View public content</li>
+    <li>Update your profile settings</li>
+    <li>Read your message history</li>
+</ul>
+
+<hr class="divider">
+
+<h3>Violation Details</h3>
+
+<p>{{ violation_details }}</p>
+
+{% if previous_warnings %}
+<div style="background-color: #fff3e0; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #ff9800;">
+    <p style="margin: 0;"><strong>Previous Warnings:</strong> You received {{ previous_warnings }} warning(s) prior to this suspension. This suspension is a result of repeated violations.</p>
+</div>
+{% endif %}
+
+<hr class="divider">
+
+<h3>After Your Suspension</h3>
+
+<p>Your account will be automatically reactivated on <strong>{{ suspension_end_date }}</strong>. Once reactivated:</p>
+
+<ul>
+    <li>All account features will be restored</li>
+    <li>You'll be able to participate normally</li>
+    <li>However, any future violations may result in permanent ban</li>
+</ul>
+
+<div class="warning" style="background-color: #ffebee; border-left: 4px solid #f44336; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <p style="margin: 0;"><strong>Important:</strong> Additional violations after this suspension will likely result in a permanent ban from CivicQ. Please carefully review our community guidelines.</p>
+</div>
+
+<a href="{{ guidelines_url }}" class="button">Review Community Guidelines</a>
+
+<hr class="divider">
+
+<h3>Appeal This Suspension</h3>
+
+<p>If you believe this suspension was issued in error, you may appeal by contacting our moderation team at <a href="mailto:{{ support_email }}">{{ support_email }}</a> within 7 days.</p>
+
+<p>Your appeal should include:</p>
+<ul>
+    <li>Explanation of why you believe the suspension is unwarranted</li>
+    <li>Any relevant context or mitigating factors</li>
+    <li>Commitment to following community guidelines going forward</li>
+</ul>
+
+<p>Appeals are typically reviewed within 3-5 business days.</p>
+
+<p>We take community standards seriously and hope you'll return as a positive contributor to civic engagement.</p>
+
+<p>Best regards,<br>The CivicQ Moderation Team</p>
+{% endblock %}

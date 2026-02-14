@@ -1,29 +1,115 @@
-__pycache__
-*.pyc
-*.pyo
-*.pyd
+# ============================================================================
+# CivicQ Backend - Docker Ignore File
+# ============================================================================
+# This file specifies which files and directories should be excluded from
+# the Docker build context to reduce build time and image size
+# ============================================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
 .Python
-env
-venv
-ENV
-.venv
+*.egg-info/
+dist/
+build/
+*.egg
 pip-log.txt
 pip-delete-this-directory.txt
-.tox
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
-.git
-.gitignore
-.mypy_cache
-.pytest_cache
-.hypothesis
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Environment files (contain secrets)
 .env
-.env.local
-*.db
+.env.*
+!.env.example
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.pydevproject
+.settings/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+*.cover
+.cache
+
+# Documentation
+docs/_build/
+*.md
+!README.md
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+azure-pipelines.yml
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Logs and databases
+*.log
 *.sqlite
-*.sqlite3
+*.db
+logs/
+
+# Media files (uploaded content)
+media/
+uploads/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Development scripts
+scripts/test*.sh
+scripts/dev*.sh
+scripts/local*.sh
+
+# Alembic (but keep the directory structure)
+alembic/versions/*.pyc
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Pre-commit
+.pre-commit-config.yaml

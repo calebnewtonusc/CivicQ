@@ -1,0 +1,88 @@
+{% extends "base_email.html" %}
+
+{% block title %}City Verified - Welcome to CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ official_name }},</h2>
+
+<p>Congratulations! Your city has been successfully verified on CivicQ.</p>
+
+<div style="background-color: #e8f5e9; border-left: 4px solid #4caf50; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #2e7d32;">City Verified</h3>
+    <p style="font-size: 18px; color: #333; margin-bottom: 10px;">
+        <strong>{{ city_name }}, {{ state }}</strong>
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 0;">
+        Your city is now live on CivicQ and ready to engage with voters!
+    </p>
+</div>
+
+<a href="{{ admin_dashboard_url }}" class="button">Access Admin Dashboard</a>
+
+<hr class="divider">
+
+<h3>Getting Started</h3>
+
+<p>Now that your city is verified, you can:</p>
+
+<ol style="line-height: 2;">
+    <li><strong>Set up elections:</strong> Add upcoming elections, positions, and ballot measures</li>
+    <li><strong>Verify candidates:</strong> Review and approve candidate registrations</li>
+    <li><strong>Manage content:</strong> Moderate questions and answers for your city</li>
+    <li><strong>Invite staff:</strong> Add city staff members to help manage the platform</li>
+    <li><strong>Customize settings:</strong> Configure city-specific settings and preferences</li>
+</ol>
+
+<div style="background-color: #e3f2fd; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #2196f3;">
+    <p style="margin: 0;"><strong>Quick Start Guide:</strong> Check your admin dashboard for a step-by-step setup guide and training resources.</p>
+</div>
+
+<hr class="divider">
+
+<h3>Your Admin Credentials</h3>
+
+<p>You now have full administrative access for {{ city_name }}. Your account can:</p>
+
+<ul>
+    <li>Verify and manage candidates</li>
+    <li>Create and manage elections</li>
+    <li>Access moderation tools</li>
+    <li>View analytics and engagement metrics</li>
+    <li>Configure city settings and branding</li>
+</ul>
+
+<hr class="divider">
+
+<h3>Next Steps</h3>
+
+<div style="background-color: #f5f5f5; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <ol style="margin: 0; padding-left: 20px;">
+        <li style="margin-bottom: 15px;"><strong>Add Upcoming Elections:</strong> Input all elections scheduled in the next 12 months</li>
+        <li style="margin-bottom: 15px;"><strong>Invite Candidates:</strong> Send invitations to registered candidates to join the platform</li>
+        <li style="margin-bottom: 15px;"><strong>Configure Moderation:</strong> Set up moderation rules and assign moderators if needed</li>
+        <li style="margin-bottom: 15px;"><strong>Promote to Voters:</strong> Share CivicQ with your constituents through official channels</li>
+        <li style="margin-bottom: 0;"><strong>Schedule Training:</strong> Book a training session with our team if needed</li>
+    </ol>
+</div>
+
+<hr class="divider">
+
+<h3>Support and Resources</h3>
+
+<p>Need help getting started? We're here for you:</p>
+
+<ul>
+    <li><strong>Email Support:</strong> <a href="mailto:{{ support_email }}">{{ support_email }}</a></li>
+    <li><strong>Admin Guide:</strong> <a href="{{ admin_guide_url }}">View comprehensive admin documentation</a></li>
+    <li><strong>Video Tutorials:</strong> <a href="{{ tutorials_url }}">Watch step-by-step setup videos</a></li>
+    <li><strong>Schedule Training:</strong> <a href="{{ training_url }}">Book a 1-on-1 training session</a></li>
+</ul>
+
+<div style="background-color: #fff3e0; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #ff9800;">
+    <p style="margin: 0;"><strong>Important:</strong> We recommend completing the initial setup at least 60 days before your next election to give candidates and voters time to engage.</p>
+</div>
+
+<p>Welcome to CivicQ! We're excited to help {{ city_name }} build a more transparent and engaged democracy.</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}
