@@ -7,7 +7,7 @@ interface ContestCardProps {
   ballotId?: number;
 }
 
-const ContestCard: React.FC<ContestCardProps> = ({ contest, ballotId }) => {
+const ContestCard: React.FC<ContestCardProps> = ({ contest, ballotId: _ballotId }) => {
   const candidateCount = contest.candidates?.length || 0;
   const questionCount = contest.questions?.length || 0;
 
