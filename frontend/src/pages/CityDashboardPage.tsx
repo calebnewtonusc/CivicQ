@@ -40,7 +40,7 @@ const CityDashboardPage: React.FC = () => {
 
   useEffect(() => {
     fetchDashboardData();
-  }, [cityId]);
+  }, [cityId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchDashboardData = async () => {
     try {

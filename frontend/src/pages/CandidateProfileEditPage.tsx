@@ -60,7 +60,7 @@ export default function CandidateProfileEditPage() {
 
     // Load current profile data
     loadProfile();
-  }, [user, isAuthenticated, authLoading, navigate]);
+  }, [user, isAuthenticated, authLoading, navigate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadProfile = async () => {
     try {

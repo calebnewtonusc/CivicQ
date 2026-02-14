@@ -371,7 +371,7 @@ export const auditLogAPI = {
   },
 };
 
-export default {
+const adminAPI = {
   dashboard: adminDashboardAPI,
   questions: questionModerationAPI,
   users: userManagementAPI,
@@ -380,3 +380,5 @@ export default {
   config: cityConfigAPI,
   auditLog: auditLogAPI,
 };
+
+export default adminAPI;

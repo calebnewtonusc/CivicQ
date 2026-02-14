@@ -287,8 +287,8 @@ export default function CandidateOnboardingPage() {
           </div>
           <div className="ml-3">
             <label htmlFor="agreeToTerms" className="text-sm text-gray-700">
-              I agree to the CivicQ <a href="#" className="text-blue-600 hover:text-blue-500">Terms of Service</a> and{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-500">Community Guidelines</a>. I understand that all video
+              I agree to the CivicQ <a href="/terms" className="text-blue-600 hover:text-blue-500">Terms of Service</a> and{' '}
+              <a href="/terms" className="text-blue-600 hover:text-blue-500">Community Guidelines</a>. I understand that all video
               answers are permanent and publicly visible.
             </label>
           </div>

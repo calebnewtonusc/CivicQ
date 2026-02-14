@@ -31,6 +31,7 @@ const UserManagement: React.FC = () => {
 
   useEffect(() => {
     loadUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roleFilter, statusFilter]);
 
   const loadUsers = async () => {
