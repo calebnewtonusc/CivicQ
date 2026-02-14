@@ -8,14 +8,12 @@ import CandidateCard from '../components/CandidateCard';
 import QuestionCard from '../components/QuestionCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
+import SmartQuestionComposer from '../components/SmartQuestionComposer';
 
 const ContestPage: React.FC = () => {
   const { contestId } = useParams<{ contestId: string }>();
   const { isAuthenticated } = useAuthContext();
   const [showQuestionForm, setShowQuestionForm] = useState(false);
-  const [questionText, setQuestionText] = useState('');
-  const [questionContext, setQuestionContext] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const contestIdNum = contestId ? parseInt(contestId) : undefined;
 
@@ -29,26 +27,26 @@ const ContestPage: React.FC = () => {
 
   const createQuestionMutation = useCreateQuestion();
 
-  const handleSubmitQuestion = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitQuestion = async (questionText: string) => {
     if (!contestIdNum || !questionText.trim()) return;
 
     try {
       await createQuestionMutation.mutateAsync({
         contest_id: contestIdNum,
         question_text: questionText,
-        issue_tags: selectedTags,
-        context: questionContext || undefined,
+        issue_tags: [],
+        context: undefined,
       });
 
-      setQuestionText('');
-      setQuestionContext('');
-      setSelectedTags([]);
       setShowQuestionForm(false);
       refetchQuestions();
     } catch (error) {
       console.error('Failed to submit question:', error);
     }
+  };
+
+  const handleCancelQuestion = () => {
+    setShowQuestionForm(false);
   };
 
   if (contestLoading) {
@@ -147,64 +145,27 @@ const ContestPage: React.FC = () => {
                 {isAuthenticated && (
                   <button
                     onClick={() => setShowQuestionForm(!showQuestionForm)}
-                    className="px-4 py-2 bg-civic-blue text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all font-medium flex items-center gap-2 shadow-sm"
                   >
-                    {showQuestionForm ? 'Cancel' : 'Ask Question'}
+                    {!showQuestionForm && (
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z" />
+                      </svg>
+                    )}
+                    {showQuestionForm ? 'Cancel' : 'Ask Question with AI'}
                   </button>
                 )}
               </div>
 
-              {/* Question Form */}
-              {showQuestionForm && (
-                <form
-                  onSubmit={handleSubmitQuestion}
-                  className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6"
-                >
-                  <h3 className="text-lg font-semibold mb-4">Submit a Question</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Your Question
-                      </label>
-                      <textarea
-                        value={questionText}
-                        onChange={(e) => setQuestionText(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-civic-blue focus:border-transparent"
-                        rows={3}
-                        placeholder="What would you like to know from the candidates?"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Context (Optional)
-                      </label>
-                      <textarea
-                        value={questionContext}
-                        onChange={(e) => setQuestionContext(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-civic-blue focus:border-transparent"
-                        rows={2}
-                        placeholder="Why does this question matter to you?"
-                      />
-                    </div>
-                    <div className="flex justify-end space-x-3">
-                      <button
-                        type="button"
-                        onClick={() => setShowQuestionForm(false)}
-                        className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={createQuestionMutation.isPending}
-                        className="px-6 py-2 bg-civic-blue text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-                      >
-                        {createQuestionMutation.isPending ? 'Submitting...' : 'Submit Question'}
-                      </button>
-                    </div>
-                  </div>
-                </form>
+              {/* Question Form - AI-Powered Smart Composer */}
+              {showQuestionForm && contestIdNum && (
+                <div className="mb-6">
+                  <SmartQuestionComposer
+                    contestId={contestIdNum}
+                    onSubmit={handleSubmitQuestion}
+                    onCancel={handleCancelQuestion}
+                  />
+                </div>
               )}
 
               {questionsLoading && <LoadingSpinner message="Loading questions..." />}
@@ -256,12 +217,15 @@ const ContestPage: React.FC = () => {
                   <>
                     <button
                       onClick={() => setShowQuestionForm(true)}
-                      className="w-full px-4 py-2 bg-civic-blue text-white rounded-lg hover:bg-blue-700 transition-colors"
+                      className="w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center justify-center gap-2 shadow-sm"
                     >
-                      Ask a Question
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z" />
+                      </svg>
+                      Ask a Question with AI
                     </button>
                     <p className="text-sm text-gray-600">
-                      Vote on questions to help surface the most important issues
+                      Get AI-powered help crafting great questions that matter to voters
                     </p>
                   </>
                 ) : (

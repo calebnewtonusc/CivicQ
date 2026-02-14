@@ -26,6 +26,7 @@ from app.api import (
     moderation,
     admin,
 )
+from app.api.v1.endpoints import llm
 
 # Setup logging
 setup_logging()
@@ -105,6 +106,7 @@ app.include_router(questions.router, prefix="/api", tags=["Questions"])
 app.include_router(candidates.router, prefix="/api/candidates", tags=["Candidates"])
 app.include_router(moderation.router, prefix="/api", tags=["Moderation"])
 app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
+app.include_router(llm.router, prefix="/api/v1/llm", tags=["AI Features"])
 
 
 # Global exception handler

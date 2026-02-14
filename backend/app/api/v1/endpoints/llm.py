@@ -6,11 +6,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 
-from app.core.database import get_db
+from app.models.base import get_db
 from app.core.security import get_current_user
 from app.models.user import User
 from app.models.question import Question
-from app.models.contest import Contest
+from app.models.ballot import Contest
 from app.services.llm_service import get_llm_service, QuestionAnalysis
 from pydantic import BaseModel
 

@@ -284,3 +284,40 @@ export interface VideoAnswerSubmit {
   position_summary?: string;
   is_open_question?: boolean;
 }
+
+// LLM/AI Feature Types
+export interface QuestionAnalysis {
+  quality_score: number;
+  is_appropriate: boolean;
+  category: string;
+  subcategory?: string;
+  issues: string[];
+  suggestions: string[];
+  improved_version?: string;
+}
+
+export interface QuestionAnalysisResponse {
+  analysis: QuestionAnalysis;
+  success: boolean;
+  message: string;
+}
+
+export interface DuplicateCheckResult {
+  is_duplicate: boolean;
+  similarity_score: number;
+  matched_question_id?: number;
+  explanation: string;
+  success: boolean;
+}
+
+export interface SuggestedQuestionsResponse {
+  questions: string[];
+  success: boolean;
+}
+
+export interface LLMHealthResponse {
+  status: 'healthy' | 'unhealthy';
+  enabled?: boolean;
+  model?: string;
+  error?: string;
+}
