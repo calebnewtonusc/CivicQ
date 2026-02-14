@@ -81,11 +81,11 @@ const SmartQuestionComposer: React.FC<SmartQuestionComposerProps> = ({
 
   const handleSubmit = () => {
     if (!analysis?.is_appropriate) {
-      alert('This question appears to be inappropriate. Please revise it.');
+      window.alert('This question appears to be inappropriate. Please revise it.');
       return;
     }
     if (isDuplicate) {
-      if (!confirm('This question appears to be a duplicate. Submit anyway?')) {
+      if (!window.confirm('This question appears to be a duplicate. Submit anyway?')) {
         return;
       }
     }
