@@ -67,7 +67,7 @@ const SmartQuestionComposer: React.FC<SmartQuestionComposerProps> = ({
     }, 1500);
 
     return () => clearTimeout(timer);
-  }, [questionText]);
+  }, [questionText, analyzeMutation, duplicateCheckMutation]);
 
   const handleUseSuggestion = (suggestion: string) => {
     setQuestionText(suggestion);
