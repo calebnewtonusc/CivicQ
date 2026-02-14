@@ -91,6 +91,13 @@ class User(Base):
     # Activity tracking
     last_active = Column(DateTime, default=datetime.utcnow)
     last_login = Column(DateTime, nullable=True)
+    last_login_ip = Column(String, nullable=True)
+    last_login_user_agent = Column(String, nullable=True)
+
+    # Security tracking
+    failed_login_attempts = Column(Integer, default=0, nullable=False)
+    account_locked_until = Column(DateTime, nullable=True)
+    locked_reason = Column(String, nullable=True)
 
     # Relationships
     verification_records = relationship("VerificationRecord", back_populates="user")

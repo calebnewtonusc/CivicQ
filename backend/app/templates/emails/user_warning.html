@@ -1,0 +1,83 @@
+{% extends "base_email.html" %}
+
+{% block title %}Warning - Community Guidelines Violation - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ user_name }},</h2>
+
+<p>This is an official warning regarding your recent activity on CivicQ.</p>
+
+<div class="warning" style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #856404;">Warning Notice</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Warning Level:</strong> {{ warning_level }} of 3
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Reason:</strong> {{ warning_reason }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Date:</strong> {{ warning_date }}
+    </p>
+</div>
+
+<h3>What Happened</h3>
+
+<p>{{ violation_description }}</p>
+
+<div style="background-color: #f5f5f5; border: 1px solid #ddd; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #333;">Content in Question</h3>
+    <p style="font-size: 15px; color: #555; line-height: 1.6; white-space: pre-wrap;">{{ content_text }}</p>
+</div>
+
+<hr class="divider">
+
+<h3>Action Required</h3>
+
+{% if warning_level == 1 %}
+<p>This is your <strong>first warning</strong>. Please take this opportunity to review our community guidelines and ensure your future participation follows our standards.</p>
+
+<div style="background-color: #e3f2fd; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #2196f3;">
+    <p style="margin: 0;"><strong>Next Steps:</strong> No immediate action is required, but please be mindful of our community guidelines going forward.</p>
+</div>
+
+{% elif warning_level == 2 %}
+<p>This is your <strong>second warning</strong>. Your account is at risk of suspension if violations continue.</p>
+
+<div class="warning" style="background-color: #fff3cd; border-left: 4px solid #ff9800; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <p style="margin: 0;"><strong>Important:</strong> One more violation will result in temporary account suspension.</p>
+</div>
+
+{% else %}
+<p>This is your <strong>final warning</strong>. Any additional violations will result in immediate account suspension or permanent ban.</p>
+
+<div class="warning" style="background-color: #ffebee; border-left: 4px solid #f44336; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <p style="margin: 0;"><strong>Critical:</strong> Your account is on the verge of suspension. Please review and strictly follow our community guidelines.</p>
+</div>
+{% endif %}
+
+<a href="{{ guidelines_url }}" class="button">Review Community Guidelines</a>
+
+<hr class="divider">
+
+<h3>Community Guidelines Summary</h3>
+
+<p>To maintain a healthy civic engagement platform, we require all users to:</p>
+
+<ul>
+    <li>Engage respectfully with all community members</li>
+    <li>Focus on issues, not personal attacks</li>
+    <li>Provide factual, truthful information</li>
+    <li>Avoid hate speech, threats, or harassment</li>
+    <li>Keep content relevant to local governance and elections</li>
+</ul>
+
+<hr class="divider">
+
+<h3>Questions or Appeals</h3>
+
+<p>If you have questions about this warning or believe it was issued in error, please contact our moderation team at <a href="mailto:{{ support_email }}">{{ support_email }}</a> within 7 days.</p>
+
+<p>We value your participation in CivicQ and hope you'll continue to contribute positively to our community.</p>
+
+<p>Best regards,<br>The CivicQ Moderation Team</p>
+{% endblock %}

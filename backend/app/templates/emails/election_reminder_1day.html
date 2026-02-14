@@ -1,0 +1,154 @@
+{% extends "base_email.html" %}
+
+{% block title %}Vote Tomorrow! - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ user_name }},</h2>
+
+<p><strong>Tomorrow is Election Day!</strong> Make sure you're ready to vote.</p>
+
+<div style="background-color: #ffebee; border-left: 4px solid #f44336; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #c62828;">Final Election Reminder</h3>
+    <p style="font-size: 24px; color: #333; margin-bottom: 10px; font-weight: bold;">
+        TOMORROW: {{ election_date }}
+    </p>
+    <p style="font-size: 18px; color: #333; margin-bottom: 10px;">
+        {{ election_name }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin: 0;">
+        {{ city_name }}, {{ state }}
+    </p>
+</div>
+
+<a href="{{ polling_place_url }}" class="button" style="background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);">Find Your Polling Place</a>
+
+<hr class="divider">
+
+<h3>Critical Information</h3>
+
+<div style="background-color: #fff3e0; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #ffe0b2;"><strong>When:</strong></td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #ffe0b2; text-align: right;">{{ election_date }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #ffe0b2;"><strong>Poll Hours:</strong></td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #ffe0b2; text-align: right;">{{ poll_open_time }} - {{ poll_close_time }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #ffe0b2;"><strong>Your Polling Place:</strong></td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #ffe0b2; text-align: right;">
+                {% if polling_location %}{{ polling_location }}{% else %}<a href="{{ polling_place_url }}">Find it here</a>{% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 10px 0;"><strong>ID Required:</strong></td>
+            <td style="padding: 10px 0; text-align: right;">{% if id_required %}Yes - Photo ID{% else %}Recommended{% endif %}</td>
+        </tr>
+    </table>
+</div>
+
+<hr class="divider">
+
+<h3>What to Bring</h3>
+
+<ul>
+    {% if id_required %}
+    <li><strong>Valid Photo ID (REQUIRED)</strong> - Driver's license, passport, or state ID</li>
+    {% else %}
+    <li><strong>Photo ID (recommended)</strong> - Helps speed up the process</li>
+    {% endif %}
+    <li><strong>Voter registration card</strong> (if you have it)</li>
+    <li><strong>Sample ballot or notes</strong> with your choices</li>
+    <li><strong>Comfortable shoes</strong> if there might be a line</li>
+</ul>
+
+<hr class="divider">
+
+<h3>Quick Candidate Review</h3>
+
+<p>Last chance to review candidate positions:</p>
+
+<div style="background-color: #f5f5f5; padding: 15px; border-radius: 4px; margin: 20px 0;">
+    {% for position in positions %}
+    <div style="padding: 10px 0; {% if not loop.last %}border-bottom: 1px solid #ddd;{% endif %}">
+        <strong>{{ position.name }}</strong><br>
+        <span style="font-size: 14px; color: #666;">{{ position.candidates_count }} candidate{{ position.candidates_count|pluralize }}</span>
+        <a href="{{ position.compare_url }}" style="color: #667eea; text-decoration: none; font-size: 14px; margin-left: 10px;">Compare →</a>
+    </div>
+    {% endfor %}
+</div>
+
+<a href="{{ all_candidates_url }}" class="button">Review All Candidates</a>
+
+<hr class="divider">
+
+{% if your_answered_questions %}
+<h3>Your Questions Were Answered</h3>
+
+<p>Review the {{ your_answered_questions|length }} answer{{ your_answered_questions|length|pluralize }} you received:</p>
+
+<div style="background-color: #e8f5e9; padding: 15px; border-radius: 4px; margin: 20px 0;">
+    {% for question in your_answered_questions[:3] %}
+    <div style="padding: 10px 0; {% if not loop.last %}border-bottom: 1px solid #c8e6c9;{% endif %}">
+        <strong>{{ question.candidate_name }}</strong> answered your question<br>
+        <span style="font-size: 14px; color: #555;">"{{ question.text|truncate(60) }}"</span>
+        <a href="{{ question.url }}" style="color: #667eea; text-decoration: none; font-size: 14px; margin-left: 10px;">Read →</a>
+    </div>
+    {% endfor %}
+</div>
+
+<hr class="divider">
+{% endif %}
+
+<h3>Vote Smart Tips</h3>
+
+<ul>
+    <li><strong>Go Early:</strong> Polls are least crowded right after opening or mid-afternoon</li>
+    <li><strong>Check Your Registration:</strong> Verify at <a href="{{ voter_registration_url }}">{{ voter_registration_url }}</a></li>
+    <li><strong>Know Your Rights:</strong> You can request assistance or a provisional ballot if needed</li>
+    <li><strong>Take Your Time:</strong> Don't rush - carefully review each race before submitting</li>
+    <li><strong>Ask Questions:</strong> Poll workers are there to help you</li>
+</ul>
+
+<div class="warning" style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <p style="margin: 0;"><strong>In Line at {{ poll_close_time }}?</strong> You have the right to vote! Stay in line - if you're in line when polls close, you can still vote.</p>
+</div>
+
+<hr class="divider">
+
+<h3>Share With Others</h3>
+
+<p>Remind your friends, family, and neighbors to vote tomorrow!</p>
+
+<ul>
+    <li>Share polling place information</li>
+    <li>Offer rides to those who need transportation</li>
+    <li>Post on social media using #Vote{{ city_name }}</li>
+    <li>Share CivicQ so others can research candidates</li>
+</ul>
+
+<div style="background-color: #e3f2fd; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #2196f3;">
+    <p style="margin: 0;"><strong>Your Vote Matters!</strong> Local elections are often decided by just a handful of votes. Make your voice heard tomorrow!</p>
+</div>
+
+<hr class="divider">
+
+<h3>Need Help?</h3>
+
+<ul>
+    <li><strong>Voter Hotline:</strong> {{ voter_hotline }}</li>
+    <li><strong>Report Issues:</strong> {{ election_protection_number }}</li>
+    <li><strong>Polling Place Finder:</strong> <a href="{{ polling_place_url }}">{{ polling_place_url }}</a></li>
+    <li><strong>Voter Rights:</strong> <a href="{{ voter_rights_url }}">Know your rights</a></li>
+</ul>
+
+<p style="font-size: 20px; font-weight: bold; color: #f44336; text-align: center; margin: 30px 0;">
+    See you at the polls tomorrow!
+</p>
+
+<p>Thank you for being an engaged citizen. Your participation strengthens our democracy!</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

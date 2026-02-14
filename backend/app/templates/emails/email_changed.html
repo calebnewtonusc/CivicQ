@@ -1,0 +1,84 @@
+{% extends "base_email.html" %}
+
+{% block title %}Email Address Changed - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ user_name }},</h2>
+
+<p>This email confirms that your CivicQ account email address was successfully changed.</p>
+
+<div style="background-color: #e3f2fd; border-left: 4px solid #2196f3; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #1565c0;">Email Address Updated</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Previous Email:</strong> {{ old_email }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>New Email:</strong> {{ new_email }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 0;">
+        <strong>Changed:</strong> {{ change_date }}
+    </p>
+</div>
+
+<hr class="divider">
+
+<h3>What This Means</h3>
+
+<p>Your account email has been updated. From now on:</p>
+
+<ul>
+    <li>Use <strong>{{ new_email }}</strong> to log in to CivicQ</li>
+    <li>All future notifications will be sent to your new email</li>
+    <li>Your old email address will no longer work for login</li>
+    <li>All other account settings remain unchanged</li>
+</ul>
+
+<div style="background-color: #e8f5e9; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #4caf50;">
+    <p style="margin: 0;"><strong>Verification Required:</strong> Please check {{ new_email }} for a verification email to confirm your new address.</p>
+</div>
+
+<hr class="divider">
+
+<div class="warning" style="background-color: #f8d7da; border-left-color: #dc3545;">
+    <p><strong>If you didn't change your email:</strong></p>
+    <p>Your account may have been compromised. Please take immediate action:</p>
+    <ul>
+        <li>Contact our support team at <a href="mailto:{{ support_email }}">{{ support_email }}</a> immediately</li>
+        <li>Try to log in and change your password if you still have access</li>
+        <li>Review your recent account activity</li>
+        <li>Do not click on any suspicious links in emails</li>
+    </ul>
+</div>
+
+<hr class="divider">
+
+<h3>Security Reminder</h3>
+
+<p>To keep your account secure:</p>
+
+<ul>
+    <li>Use a strong, unique password for CivicQ</li>
+    <li>Enable two-factor authentication (2FA) for extra protection</li>
+    <li>Never share your password with anyone</li>
+    <li>Be cautious of phishing emails asking for credentials</li>
+    <li>Review your account activity regularly</li>
+</ul>
+
+<a href="{{ security_settings_url }}" class="button">Review Security Settings</a>
+
+<hr class="divider">
+
+<h3>Need Help?</h3>
+
+<p>If you have questions or concerns about this change:</p>
+
+<ul>
+    <li><strong>Email Support:</strong> <a href="mailto:{{ support_email }}">{{ support_email }}</a></li>
+    <li><strong>Account Help:</strong> <a href="{{ help_url }}">View account documentation</a></li>
+    <li><strong>Report Unauthorized Access:</strong> <a href="{{ security_url }}">Security center</a></li>
+</ul>
+
+<p>This notification was sent to both your old and new email addresses for security purposes.</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

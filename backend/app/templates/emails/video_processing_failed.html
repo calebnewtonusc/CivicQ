@@ -1,0 +1,97 @@
+{% extends "base_email.html" %}
+
+{% block title %}Video Upload Issue - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ candidate_name }},</h2>
+
+<p>We encountered an issue processing your video response and were unable to complete the upload.</p>
+
+<div class="warning" style="background-color: #ffebee; border-left: 4px solid #f44336; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #c62828;">Video Processing Failed</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Question:</strong> {{ question_text|truncate(100) }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Upload Date:</strong> {{ upload_date }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 0;">
+        <strong>Error:</strong> {{ error_reason }}
+    </p>
+</div>
+
+<a href="{{ retry_upload_url }}" class="button">Try Again</a>
+
+<hr class="divider">
+
+<h3>Common Issues and Solutions</h3>
+
+<div style="background-color: #f5f5f5; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <h4 style="margin-top: 0;">File Too Large</h4>
+    <p>Maximum file size: 500MB. Try compressing your video or recording at a lower resolution (1080p recommended).</p>
+
+    <h4>Unsupported Format</h4>
+    <p>Supported formats: MP4, MOV, AVI, WebM. Try converting your video to MP4 (H.264 codec).</p>
+
+    <h4>Video Too Long</h4>
+    <p>Maximum duration: {{ max_video_duration }} seconds. Please trim your video to fit within the time limit.</p>
+
+    <h4>Corrupted File</h4>
+    <p>The video file may be corrupted. Try re-recording or exporting the video again.</p>
+
+    <h4>Network Interruption</h4>
+    <p>Upload may have been interrupted. Ensure you have a stable internet connection and try again.</p>
+</div>
+
+<hr class="divider">
+
+<h3>Technical Requirements</h3>
+
+<p>For best results, ensure your video meets these specifications:</p>
+
+<ul>
+    <li><strong>Format:</strong> MP4 (H.264 video codec, AAC audio codec)</li>
+    <li><strong>Resolution:</strong> 720p (1280x720) or 1080p (1920x1080)</li>
+    <li><strong>Frame Rate:</strong> 24, 25, or 30 fps</li>
+    <li><strong>Duration:</strong> {{ max_video_duration }} seconds maximum</li>
+    <li><strong>File Size:</strong> 500MB maximum</li>
+    <li><strong>Audio:</strong> Clear audio, no background noise</li>
+</ul>
+
+<hr class="divider">
+
+<h3>Alternative: Upload Text Answer First</h3>
+
+<p>While you troubleshoot the video issue, consider submitting a text answer so voters can see your response right away. You can always add the video later.</p>
+
+<div style="background-color: #fff3e0; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #ff9800;">
+    <p style="margin: 0;"><strong>Pro Tip:</strong> Submit a text answer now, then come back and add video when the issue is resolved. Both will be displayed to voters.</p>
+</div>
+
+<a href="{{ text_answer_url }}" class="button" style="background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);">Submit Text Answer</a>
+
+<hr class="divider">
+
+<h3>Need Help?</h3>
+
+<p>If you continue to experience issues:</p>
+
+<ul>
+    <li><strong>Video Recording Guide:</strong> <a href="{{ video_guide_url }}">Tips for recording and uploading videos</a></li>
+    <li><strong>Technical Support:</strong> Contact us at <a href="mailto:{{ support_email }}">{{ support_email }}</a></li>
+    <li><strong>Include Details:</strong> Send us the error message, video file details, and browser info</li>
+</ul>
+
+<div style="background-color: #f5f5f5; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <h4 style="margin-top: 0;">Error Details (for support)</h4>
+    <p style="font-family: monospace; font-size: 12px; color: #666; margin: 0; word-break: break-all;">
+        Error Code: {{ error_code }}<br>
+        Upload ID: {{ upload_id }}<br>
+        Timestamp: {{ error_timestamp }}
+    </p>
+</div>
+
+<p>We apologize for the inconvenience. Our team is here to help you get your video uploaded successfully!</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

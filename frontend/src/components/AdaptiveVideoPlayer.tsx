@@ -78,12 +78,7 @@ const AdaptiveVideoPlayer: React.FC<AdaptiveVideoPlayerProps> = ({
   const watchStartTime = useRef<number>(0);
   const analyticsTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // Load video data
-  useEffect(() => {
-    loadVideoData();
-  }, [videoId]);
-
-  const loadVideoData = async () => {
+  const loadVideoData = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(`/api/videos/${videoId}`);
@@ -99,7 +94,12 @@ const AdaptiveVideoPlayer: React.FC<AdaptiveVideoPlayerProps> = ({
       setError(err.response?.data?.detail || 'Failed to load video');
       setLoading(false);
     }
-  };
+  }, [videoId]);
+
+  // Load video data
+  useEffect(() => {
+    loadVideoData();
+  }, [loadVideoData]);
 
   // Initialize video player
   useEffect(() => {
@@ -176,6 +176,40 @@ const AdaptiveVideoPlayer: React.FC<AdaptiveVideoPlayerProps> = ({
     }
   }, [videoData, autoplay]);
 
+  // Analytics tracking
+  const trackAnalytics = useCallback(async () => {
+    if (!videoRef.current || !videoData) return;
+
+    const video = videoRef.current;
+    const watchDuration = (Date.now() - watchStartTime.current) / 1000;
+    const completionPercentage = (video.currentTime / video.duration) * 100;
+
+    try {
+      await axios.post(`/api/videos/${videoId}/analytics`, {
+        session_id: sessionId.current,
+        quality_selected: selectedQuality,
+        watch_duration_seconds: watchDuration,
+        completion_percentage: completionPercentage,
+        buffering_events: 0,
+        total_buffering_time_seconds: 0
+      });
+    } catch (err) {
+      console.error('Failed to track analytics:', err);
+    }
+
+    watchStartTime.current = Date.now();
+  }, [videoId, selectedQuality, videoData]);
+
+  const startAnalyticsTracking = useCallback(() => {
+    if (analyticsTimer.current) {
+      clearInterval(analyticsTimer.current);
+    }
+
+    analyticsTimer.current = setInterval(() => {
+      trackAnalytics();
+    }, 30000); // Track every 30 seconds
+  }, [trackAnalytics]);
+
   // Video event handlers
   useEffect(() => {
     const video = videoRef.current;
@@ -237,41 +271,7 @@ const AdaptiveVideoPlayer: React.FC<AdaptiveVideoPlayerProps> = ({
       video.removeEventListener('canplay', handleCanPlay);
       video.removeEventListener('ended', handleEnded);
     };
-  }, []);
-
-  // Analytics tracking
-  const startAnalyticsTracking = () => {
-    if (analyticsTimer.current) {
-      clearInterval(analyticsTimer.current);
-    }
-
-    analyticsTimer.current = setInterval(() => {
-      trackAnalytics();
-    }, 30000); // Track every 30 seconds
-  };
-
-  const trackAnalytics = useCallback(async () => {
-    if (!videoRef.current || !videoData) return;
-
-    const video = videoRef.current;
-    const watchDuration = (Date.now() - watchStartTime.current) / 1000;
-    const completionPercentage = (video.currentTime / video.duration) * 100;
-
-    try {
-      await axios.post(`/api/videos/${videoId}/analytics`, {
-        session_id: sessionId.current,
-        quality_selected: selectedQuality,
-        watch_duration_seconds: watchDuration,
-        completion_percentage: completionPercentage,
-        buffering_events: 0,
-        total_buffering_time_seconds: 0
-      });
-    } catch (err) {
-      console.error('Failed to track analytics:', err);
-    }
-
-    watchStartTime.current = Date.now();
-  }, [videoId, selectedQuality, videoData]);
+  }, [startAnalyticsTracking, trackAnalytics]);
 
   // Cleanup analytics on unmount
   useEffect(() => {

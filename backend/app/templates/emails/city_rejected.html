@@ -1,0 +1,81 @@
+{% extends "base_email.html" %}
+
+{% block title %}City Registration Update - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ official_name }},</h2>
+
+<p>Thank you for your interest in bringing CivicQ to {{ city_name }}. After reviewing your registration, we need additional information before we can verify your city.</p>
+
+<div class="warning" style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #856404;">Additional Information Required</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Status:</strong> Pending Additional Verification
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Reason:</strong> {{ rejection_reason }}
+    </p>
+</div>
+
+<h3>What We Need From You</h3>
+
+<p>{{ detailed_requirements }}</p>
+
+<p>Please provide the following to complete your registration:</p>
+
+<ul>
+    {% for requirement in requirements %}
+    <li>{{ requirement }}</li>
+    {% endfor %}
+</ul>
+
+<a href="{{ resubmit_url }}" class="button">Update Registration</a>
+
+<hr class="divider">
+
+<h3>Common Issues and Solutions</h3>
+
+<div style="background-color: #f5f5f5; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <h4 style="margin-top: 0;">Email Verification</h4>
+    <p>We require a government email address (e.g., @cityname.gov, @cityname.us). If your city uses a third-party email provider, please contact us for alternative verification methods.</p>
+
+    <h4>Official Documentation</h4>
+    <p>Acceptable documents include: official city letterhead, employee ID, verification letter from city manager or clerk, or other official documentation proving your role.</p>
+
+    <h4>City Information</h4>
+    <p>Please ensure all city data (name, state, county, population) matches official U.S. Census records or your city's official website.</p>
+</div>
+
+<hr class="divider">
+
+<h3>Alternative Verification Options</h3>
+
+<p>If you're unable to provide the requested information, please contact us to discuss alternative verification methods:</p>
+
+<ul>
+    <li><strong>Email:</strong> <a href="mailto:{{ support_email }}">{{ support_email }}</a></li>
+    <li><strong>Phone Verification:</strong> We can call your city's main number to verify your employment</li>
+    <li><strong>In-Person Verification:</strong> For larger cities, we may be able to arrange in-person verification</li>
+</ul>
+
+<div style="background-color: #e3f2fd; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #2196f3;">
+    <p style="margin: 0;"><strong>Response Time:</strong> Please submit the requested information within 14 days. After that, you may need to restart the registration process.</p>
+</div>
+
+<hr class="divider">
+
+<h3>Why We Verify</h3>
+
+<p>We take city verification seriously to ensure:</p>
+
+<ul>
+    <li>Only legitimate government officials can manage city content</li>
+    <li>Voters can trust the authenticity of election information</li>
+    <li>Candidates interact with verified city representatives</li>
+    <li>The platform maintains integrity and credibility</li>
+</ul>
+
+<p>We appreciate your understanding and look forward to bringing CivicQ to {{ city_name }}.</p>
+
+<p>Best regards,<br>The CivicQ Verification Team</p>
+{% endblock %}

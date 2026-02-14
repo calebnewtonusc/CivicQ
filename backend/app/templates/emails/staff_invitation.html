@@ -1,0 +1,117 @@
+{% extends "base_email.html" %}
+
+{% block title %}You've Been Invited to CivicQ - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ staff_name }},</h2>
+
+<p>{{ inviter_name }} has invited you to join the CivicQ admin team for {{ city_name }}.</p>
+
+<div style="background-color: #e3f2fd; border-left: 4px solid #2196f3; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #1565c0;">Team Invitation</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>City:</strong> {{ city_name }}, {{ state }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Role:</strong> {{ staff_role }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Invited By:</strong> {{ inviter_name }} ({{ inviter_title }})
+    </p>
+</div>
+
+<a href="{{ accept_invitation_url }}" class="button">Accept Invitation</a>
+
+<hr class="divider">
+
+<h3>What is CivicQ?</h3>
+
+<p>CivicQ is a civic engagement platform that connects voters with candidates and elected officials. It enables:</p>
+
+<ul>
+    <li><strong>Transparent Q&A:</strong> Voters ask questions, candidates provide public answers</li>
+    <li><strong>Video Responses:</strong> Candidates can record video answers to connect with voters</li>
+    <li><strong>Community Voting:</strong> Questions are upvoted to surface community priorities</li>
+    <li><strong>Election Management:</strong> Cities manage elections, candidates, and ballot information</li>
+</ul>
+
+<hr class="divider">
+
+<h3>Your Role: {{ staff_role }}</h3>
+
+<p>As a {{ staff_role }}, you'll be able to:</p>
+
+{% if staff_role == "Admin" %}
+<ul>
+    <li>Full administrative access to city settings and elections</li>
+    <li>Verify and manage candidates</li>
+    <li>Create and edit elections and ballot measures</li>
+    <li>Access all moderation tools</li>
+    <li>View comprehensive analytics</li>
+    <li>Invite and manage other staff members</li>
+</ul>
+{% elif staff_role == "Moderator" %}
+<ul>
+    <li>Review and moderate questions for community guidelines</li>
+    <li>Approve or reject candidate answers</li>
+    <li>Handle content reports and flags</li>
+    <li>Issue warnings or suspensions for violations</li>
+    <li>View moderation analytics</li>
+</ul>
+{% elif staff_role == "Election Manager" %}
+<ul>
+    <li>Create and manage elections</li>
+    <li>Add candidates and ballot measures</li>
+    <li>Update election dates and information</li>
+    <li>Export election data and reports</li>
+    <li>View election engagement metrics</li>
+</ul>
+{% else %}
+<ul>
+    <li>View city dashboard and analytics</li>
+    <li>Access reports and engagement data</li>
+    <li>Monitor platform activity</li>
+</ul>
+{% endif %}
+
+<hr class="divider">
+
+<h3>Getting Started</h3>
+
+<div style="background-color: #f5f5f5; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <ol style="margin: 0; padding-left: 20px;">
+        <li style="margin-bottom: 15px;"><strong>Accept the Invitation:</strong> Click the button above to create your account</li>
+        <li style="margin-bottom: 15px;"><strong>Set Up Your Profile:</strong> Complete your profile with your official city role</li>
+        <li style="margin-bottom: 15px;"><strong>Review Training Materials:</strong> Access training videos and documentation</li>
+        <li style="margin-bottom: 15px;"><strong>Explore the Dashboard:</strong> Familiarize yourself with your tools and permissions</li>
+        <li style="margin-bottom: 0;"><strong>Join Your Team:</strong> Coordinate with other city staff on CivicQ</li>
+    </ol>
+</div>
+
+<div style="background-color: #fff3e0; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #ff9800;">
+    <p style="margin: 0;"><strong>Important:</strong> This invitation link will expire in 7 days. Please accept it soon to maintain access.</p>
+</div>
+
+<hr class="divider">
+
+<h3>Support and Training</h3>
+
+<p>We're here to help you succeed:</p>
+
+<ul>
+    <li><strong>Email Support:</strong> <a href="mailto:{{ support_email }}">{{ support_email }}</a></li>
+    <li><strong>Admin Documentation:</strong> Comprehensive guides for all features</li>
+    <li><strong>Video Tutorials:</strong> Step-by-step training videos</li>
+    <li><strong>Team Support:</strong> Connect with {{ inviter_name }} and your team</li>
+</ul>
+
+<hr class="divider">
+
+<h3>Questions?</h3>
+
+<p>If you have any questions about this invitation or CivicQ, please contact {{ inviter_name }} at <a href="mailto:{{ inviter_email }}">{{ inviter_email }}</a> or our support team at <a href="mailto:{{ support_email }}">{{ support_email }}</a>.</p>
+
+<p>We look forward to having you on the team!</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

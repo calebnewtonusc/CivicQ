@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
 import api from '../services/api';
@@ -9,26 +9,7 @@ const OAuthCallbackPage: React.FC = () => {
   const { login } = useAuthContext();
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const token = searchParams.get('token');
-    const errorParam = searchParams.get('error');
-
-    if (errorParam) {
-      setError(errorParam);
-      setTimeout(() => navigate('/login'), 3000);
-      return;
-    }
-
-    if (token) {
-      // Verify and decode token to get user data
-      handleOAuthLogin(token);
-    } else {
-      setError('No authentication token received');
-      setTimeout(() => navigate('/login'), 3000);
-    }
-  }, [searchParams, navigate]);
-
-  const handleOAuthLogin = async (token: string) => {
+  const handleOAuthLogin = useCallback(async (token: string) => {
     try {
       // Set token and get user data
       localStorage.setItem('token', token);
@@ -47,7 +28,26 @@ const OAuthCallbackPage: React.FC = () => {
       setError('Failed to complete OAuth login');
       setTimeout(() => navigate('/login'), 3000);
     }
-  };
+  }, [login, navigate]);
+
+  useEffect(() => {
+    const token = searchParams.get('token');
+    const errorParam = searchParams.get('error');
+
+    if (errorParam) {
+      setError(errorParam);
+      setTimeout(() => navigate('/login'), 3000);
+      return;
+    }
+
+    if (token) {
+      // Verify and decode token to get user data
+      handleOAuthLogin(token);
+    } else {
+      setError('No authentication token received');
+      setTimeout(() => navigate('/login'), 3000);
+    }
+  }, [searchParams, navigate, handleOAuthLogin]);
 
   if (error) {
     return (

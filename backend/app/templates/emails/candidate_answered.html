@@ -1,0 +1,51 @@
+{% extends "base_email.html" %}
+
+{% block title %}Candidate Answered Your Question - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ user_name }},</h2>
+
+<p>Exciting news! {{ candidate_name }} has answered your question on CivicQ.</p>
+
+<div style="background-color: #e8f5e9; border-left: 4px solid #4caf50; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #2e7d32;">Your Question</h3>
+    <p style="font-size: 15px; color: #555; line-height: 1.6;">
+        "{{ question_text }}"
+    </p>
+</div>
+
+<div style="background-color: #f3e5f5; border-left: 4px solid #9c27b0; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #6a1b9a;">{{ candidate_name }}'s Response</h3>
+    <p style="font-size: 15px; color: #333; line-height: 1.7;">
+        {{ answer_text }}
+    </p>
+    {% if has_video %}
+    <p style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e1bee7;">
+        <strong>Video Response Available</strong> - Watch the candidate's video answer on the platform
+    </p>
+    {% endif %}
+</div>
+
+<a href="{{ answer_url }}" class="button">View Full Response</a>
+
+<hr class="divider">
+
+<h3>Take Action</h3>
+
+<p>Now that you've received an answer, you can:</p>
+
+<ul>
+    <li><strong>Rate the response:</strong> Help others by rating how well this answer addressed your question</li>
+    <li><strong>Share the answer:</strong> Let others in your community know about this response</li>
+    <li><strong>Follow up:</strong> If appropriate, you can ask a related follow-up question</li>
+    <li><strong>Compare candidates:</strong> See how other candidates answered similar questions</li>
+</ul>
+
+<div style="background-color: #e3f2fd; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #2196f3;">
+    <p style="margin: 0;"><strong>Stay Informed:</strong> Continue asking questions and engaging with candidates to make an informed decision on election day!</p>
+</div>
+
+<p>Thank you for using CivicQ to engage with your local candidates!</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

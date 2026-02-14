@@ -1,0 +1,106 @@
+{% extends "base_email.html" %}
+
+{% block title %}Video Upload Successful - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ candidate_name }},</h2>
+
+<p>Great news! Your video response has been successfully uploaded and processed.</p>
+
+<div style="background-color: #e8f5e9; border-left: 4px solid #4caf50; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #2e7d32;">Video Processed Successfully</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Question:</strong> {{ question_text|truncate(100) }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Video Duration:</strong> {{ video_duration }} seconds
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Status:</strong> <span style="color: #4caf50;">Live</span>
+    </p>
+    {% if transcription_available %}
+    <p style="font-size: 16px; color: #333; margin-bottom: 0;">
+        <strong>Transcription:</strong> Complete (auto-generated)
+    </p>
+    {% endif %}
+</div>
+
+<a href="{{ answer_url }}" class="button">View Your Answer</a>
+
+<hr class="divider">
+
+<h3>Video Details</h3>
+
+<p>Your video has been:</p>
+
+<ul>
+    <li><strong>Processed:</strong> Optimized for streaming on all devices</li>
+    <li><strong>Published:</strong> Now visible to voters on your profile</li>
+    {% if transcription_available %}
+    <li><strong>Transcribed:</strong> Auto-generated transcript available for accessibility</li>
+    {% endif %}
+    <li><strong>Compressed:</strong> Optimized for fast loading without quality loss</li>
+    <li><strong>Secured:</strong> Protected with CDN delivery and access controls</li>
+</ul>
+
+{% if transcription_available %}
+<hr class="divider">
+
+<h3>Video Transcription</h3>
+
+<div style="background-color: #f5f5f5; border: 1px solid #ddd; padding: 20px; margin: 20px 0; border-radius: 4px;">
+    <p style="font-size: 14px; color: #555; line-height: 1.6; margin: 0; white-space: pre-wrap;">{{ transcription_text }}</p>
+</div>
+
+<p style="font-size: 14px; color: #666;">
+    <em>This transcription was automatically generated. <a href="{{ edit_transcription_url }}">Edit transcription</a> if corrections are needed.</em>
+</p>
+{% endif %}
+
+<hr class="divider">
+
+<h3>Video Performance</h3>
+
+<p>Video answers typically receive:</p>
+
+<ul>
+    <li><strong>3x more views</strong> than text-only answers</li>
+    <li><strong>2.5x more upvotes</strong> from voters</li>
+    <li><strong>Higher trust ratings</strong> from the community</li>
+    <li><strong>More social shares</strong> across platforms</li>
+</ul>
+
+<div style="background-color: #e3f2fd; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #2196f3;">
+    <p style="margin: 0;"><strong>Keep It Up:</strong> Consider adding video responses to your other answers to maximize voter engagement!</p>
+</div>
+
+<hr class="divider">
+
+<h3>Share Your Answer</h3>
+
+<p>Maximize the impact of your video by sharing it:</p>
+
+<ul>
+    <li>On your campaign social media</li>
+    <li>In email newsletters to supporters</li>
+    <li>On your campaign website</li>
+    <li>At campaign events and town halls</li>
+</ul>
+
+<div style="background-color: #f5f5f5; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0;"><strong>Direct Link:</strong></p>
+    <p style="margin: 0; word-break: break-all;"><a href="{{ answer_url }}">{{ answer_url }}</a></p>
+</div>
+
+<hr class="divider">
+
+<h3>Next Steps</h3>
+
+<p>You still have <strong>{{ remaining_questions }}</strong> unanswered question{{ remaining_questions|pluralize }}. Keep the momentum going!</p>
+
+<a href="{{ answer_questions_url }}" class="button">Answer More Questions</a>
+
+<p>Thank you for engaging with voters through video. This kind of transparency strengthens democracy!</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

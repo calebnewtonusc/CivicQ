@@ -1,0 +1,93 @@
+{% extends "base_email.html" %}
+
+{% block title %}Account Permanently Banned - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ user_name }},</h2>
+
+<p>Your CivicQ account has been permanently banned due to severe or repeated violations of our community guidelines.</p>
+
+<div class="warning" style="background-color: #ffebee; border-left: 4px solid #d32f2f; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #b71c1c;">Permanent Ban Notice</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Account Status:</strong> Permanently Banned
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Effective Date:</strong> {{ ban_date }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Reason:</strong> {{ ban_reason }}
+    </p>
+</div>
+
+<h3>What This Means</h3>
+
+<p>Your account has been permanently deactivated. You will no longer be able to:</p>
+
+<ul>
+    <li>Access your CivicQ account</li>
+    <li>Submit questions or vote</li>
+    <li>Post answers or engage with content</li>
+    <li>Create new accounts using the same email address</li>
+</ul>
+
+<hr class="divider">
+
+<h3>Violation Details</h3>
+
+<p>{{ violation_details }}</p>
+
+{% if violation_history %}
+<div style="background-color: #f5f5f5; padding: 15px; margin: 20px 0; border-radius: 4px; border: 1px solid #ddd;">
+    <h4 style="margin-top: 0;">Violation History</h4>
+    <ul style="margin-bottom: 0;">
+        {% for violation in violation_history %}
+        <li>{{ violation }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<hr class="divider">
+
+<h3>This Decision Is Final</h3>
+
+<p>Permanent bans are issued only in cases of:</p>
+
+<ul>
+    <li>Severe violations of community guidelines (hate speech, threats, harassment)</li>
+    <li>Repeated violations after multiple warnings and suspensions</li>
+    <li>Attempts to circumvent previous suspensions</li>
+    <li>Coordinated abuse or manipulation of the platform</li>
+    <li>Illegal activity or content</li>
+</ul>
+
+<div class="warning" style="background-color: #ffebee; border-left: 4px solid #d32f2f; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <p style="margin: 0;"><strong>Important:</strong> Attempting to create new accounts to circumvent this ban will result in those accounts also being permanently banned. IP addresses and device fingerprints may be blocked.</p>
+</div>
+
+<hr class="divider">
+
+<h3>Appeal Options</h3>
+
+<p>While permanent bans are rarely overturned, you may appeal this decision if you believe there was an error or exceptional circumstances. Appeals must be submitted within 30 days to <a href="mailto:{{ support_email }}">{{ support_email }}</a>.</p>
+
+<p>Your appeal should include:</p>
+<ul>
+    <li>Detailed explanation of why the ban should be overturned</li>
+    <li>Evidence supporting your case</li>
+    <li>Acknowledgment of violations and plan to prevent future issues</li>
+</ul>
+
+<p><strong>Note:</strong> Appeals for bans related to hate speech, threats, or illegal content are rarely successful. All appeals are reviewed by senior moderation staff.</p>
+
+<hr class="divider">
+
+<h3>Moving Forward</h3>
+
+<p>We're committed to maintaining a safe, respectful platform for civic engagement. While we regret having to ban accounts, community safety and guidelines must be upheld.</p>
+
+<p>If you're interested in civic engagement, we encourage you to participate in other legitimate civic platforms while respecting their community standards.</p>
+
+<p>Best regards,<br>The CivicQ Moderation Team</p>
+{% endblock %}

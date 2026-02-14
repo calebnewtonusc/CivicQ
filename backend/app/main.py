@@ -17,6 +17,9 @@ import time
 
 from app.core.config import settings
 from app.core.logging_config import setup_logging
+from app.core.sentry import init_sentry
+from app.core.metrics import app_info
+from app.middleware.metrics import MetricsMiddleware, metrics_endpoint
 from app.api import (
     auth,
     ballots,
@@ -30,10 +33,14 @@ from app.api import (
 )
 from app.api.admin_moderation import router as admin_moderation_router
 from app.api.v1.endpoints import llm
+from app.api import health
 
 # Setup logging
 setup_logging()
 logger = logging.getLogger(__name__)
+
+# Initialize Sentry
+init_sentry()
 
 # Initialize rate limiter
 limiter = Limiter(key_func=get_remote_address)
@@ -67,6 +74,10 @@ if settings.ENVIRONMENT == "production":
         allowed_hosts=settings.ALLOWED_HOSTS
     )
 
+# Add metrics middleware
+if settings.ENABLE_METRICS:
+    app.add_middleware(MetricsMiddleware)
+
 
 # Request timing middleware
 @app.middleware("http")
@@ -79,15 +90,11 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 
-# Health check endpoint
-@app.get("/health", tags=["Health"])
-async def health_check():
-    """Simple health check endpoint"""
-    return {
-        "status": "healthy",
-        "environment": settings.ENVIRONMENT,
-        "version": "1.0.0"
-    }
+# Metrics endpoint
+@app.get("/metrics", tags=["Monitoring"])
+async def get_metrics(request: Request):
+    """Prometheus metrics endpoint"""
+    return metrics_endpoint(request)
 
 
 # Root endpoint
@@ -102,6 +109,7 @@ async def root():
 
 
 # Include API routers
+app.include_router(health.router, tags=["Health"])
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(ballots.router, prefix="/api", tags=["Ballots"])
 app.include_router(contests.router, prefix="/api/contests", tags=["Contests"])
@@ -136,6 +144,17 @@ async def startup_event():
     logger.info("Starting CivicQ API")
     logger.info(f"Environment: {settings.ENVIRONMENT}")
     logger.info(f"Debug mode: {settings.DEBUG}")
+
+    # Set application info for Prometheus
+    app_info.info({
+        'version': '1.0.0',
+        'environment': settings.ENVIRONMENT,
+        'debug': str(settings.DEBUG),
+    })
+
+    logger.info("Monitoring and observability initialized")
+    logger.info(f"Metrics enabled: {settings.ENABLE_METRICS}")
+    logger.info(f"Sentry enabled: {settings.SENTRY_DSN is not None}")
 
 
 # Shutdown event

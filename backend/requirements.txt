@@ -22,6 +22,8 @@ email-validator==2.1.0
 
 # Video Processing
 ffmpeg-python==0.2.0
+opencv-python-headless==4.9.0.80  # For thumbnail generation and sprite sheets
+pillow>=10.2.0  # Image processing
 
 # AI/ML for clustering and embeddings
 openai==1.10.0
@@ -40,6 +42,8 @@ aiohttp==3.9.1
 # Monitoring & Logging
 python-json-logger==2.0.7
 sentry-sdk[fastapi]==1.40.0
+prometheus-client==0.20.0  # Prometheus metrics
+psutil==5.9.8  # System resource monitoring
 
 # Testing
 pytest==7.4.4

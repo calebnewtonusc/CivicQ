@@ -152,6 +152,11 @@ class Settings(BaseSettings):
 
     # Sentry (Error Tracking)
     SENTRY_DSN: Optional[str] = None
+    SENTRY_RELEASE: Optional[str] = None
+
+    # Monitoring
+    ENABLE_METRICS: bool = True
+    ENABLE_SLOW_QUERY_DETECTION: bool = False  # Enable in staging/production with pg_stat_statements
 
     # Celery (Task Queue)
     CELERY_BROKER_URL: str = "redis://localhost:6379/1"

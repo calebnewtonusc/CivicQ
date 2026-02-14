@@ -1,0 +1,87 @@
+{% extends "base_email.html" %}
+
+{% block title %}New City Registration - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi Admin,</h2>
+
+<p>A new city has registered on CivicQ and is pending verification.</p>
+
+<div style="background-color: #e3f2fd; border-left: 4px solid #2196f3; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #1565c0;">New City Registration</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>City Name:</strong> {{ city_name }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>State:</strong> {{ state }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>County:</strong> {{ county }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Population:</strong> {{ population }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Registration Date:</strong> {{ registration_date }}
+    </p>
+</div>
+
+<div style="background-color: #f5f5f5; border: 1px solid #ddd; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #333;">City Official Contact</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Name:</strong> {{ official_name }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Title:</strong> {{ official_title }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Email:</strong> {{ official_email }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Phone:</strong> {{ official_phone }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Department:</strong> {{ department }}
+    </p>
+</div>
+
+<a href="{{ admin_review_url }}" class="button">Review Registration</a>
+
+<hr class="divider">
+
+<h3>Verification Steps Required</h3>
+
+<ol>
+    <li><strong>Verify Official Identity:</strong> Confirm the registrant is a legitimate city official</li>
+    <li><strong>Check City Data:</strong> Verify city name, state, and population data is accurate</li>
+    <li><strong>Review Documentation:</strong> Check any submitted verification documents</li>
+    <li><strong>Confirm Email Domain:</strong> Ensure official email uses a valid government domain</li>
+    <li><strong>Approve or Reject:</strong> Make a decision and notify the city official</li>
+</ol>
+
+<div style="background-color: #fff3e0; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #ff9800;">
+    <p style="margin: 0;"><strong>Priority:</strong> Please review this registration within 48 hours. Cities in active election cycles should be prioritized.</p>
+</div>
+
+<hr class="divider">
+
+<h3>Additional Information</h3>
+
+{% if upcoming_elections %}
+<p><strong>Upcoming Elections:</strong></p>
+<ul>
+    {% for election in upcoming_elections %}
+    <li>{{ election }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if notes %}
+<div style="background-color: #f5f5f5; padding: 15px; margin: 20px 0; border-radius: 4px;">
+    <h4 style="margin-top: 0;">Registration Notes</h4>
+    <p style="margin: 0;">{{ notes }}</p>
+</div>
+{% endif %}
+
+<p>Best regards,<br>CivicQ Automated System</p>
+{% endblock %}

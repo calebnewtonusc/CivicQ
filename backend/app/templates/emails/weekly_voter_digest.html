@@ -1,0 +1,134 @@
+{% extends "base_email.html" %}
+
+{% block title %}Your Weekly CivicQ Digest - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ user_name }},</h2>
+
+<p>Here's what's happening this week in {{ city_name }} on CivicQ.</p>
+
+<div style="background-color: #e3f2fd; border-left: 4px solid #2196f3; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #1565c0;">This Week in {{ city_name }}</h3>
+    <p style="font-size: 16px; color: #333; margin: 0;">{{ week_start_date }} - {{ week_end_date }}</p>
+</div>
+
+<hr class="divider">
+
+<h3>New Candidate Answers</h3>
+
+{% if new_answers %}
+<p>Candidates answered <strong>{{ new_answers|length }}</strong> question{{ new_answers|length|pluralize }} this week:</p>
+
+{% for answer in new_answers %}
+<div style="background-color: #f3e5f5; padding: 15px; margin: 15px 0; border-radius: 4px; border-left: 4px solid #9c27b0;">
+    <p style="margin: 0 0 10px 0;"><strong>{{ answer.candidate_name }}</strong> answered:</p>
+    <p style="margin: 0 0 10px 0; color: #555; font-size: 15px;">"{{ answer.question_text|truncate(100) }}"</p>
+    {% if answer.has_video %}
+    <p style="margin: 0; color: #9c27b0; font-size: 14px;">Includes video response</p>
+    {% endif %}
+    <a href="{{ answer.url }}" style="color: #667eea; text-decoration: none; font-size: 14px;">View answer →</a>
+</div>
+{% endfor %}
+
+{% else %}
+<p>No new answers this week. <a href="{{ ask_question_url }}">Ask a question</a> to engage candidates!</p>
+{% endif %}
+
+<hr class="divider">
+
+<h3>Trending Questions</h3>
+
+{% if trending_questions %}
+<p>These questions are getting the most attention from voters:</p>
+
+{% for question in trending_questions %}
+<div style="background-color: #fff3e0; padding: 15px; margin: 15px 0; border-radius: 4px; border-left: 4px solid #ff9800;">
+    <p style="margin: 0 0 10px 0;"><strong>{{ question.upvotes }} upvotes</strong> - For {{ question.candidate_name }}</p>
+    <p style="margin: 0 0 10px 0; color: #555; font-size: 15px;">"{{ question.text }}"</p>
+    {% if question.answered %}
+    <p style="margin: 0; color: #4caf50; font-size: 14px;">Answered</p>
+    {% else %}
+    <p style="margin: 0; color: #999; font-size: 14px;">Awaiting answer</p>
+    {% endif %}
+    <a href="{{ question.url }}" style="color: #667eea; text-decoration: none; font-size: 14px;">View question →</a>
+</div>
+{% endfor %}
+
+{% endif %}
+
+<a href="{{ browse_questions_url }}" class="button">Browse All Questions</a>
+
+<hr class="divider">
+
+{% if upcoming_elections %}
+<h3>Upcoming Elections</h3>
+
+{% for election in upcoming_elections %}
+<div style="background-color: #e8f5e9; padding: 15px; margin: 15px 0; border-radius: 4px; border-left: 4px solid #4caf50;">
+    <p style="margin: 0 0 5px 0; font-size: 18px; font-weight: bold; color: #2e7d32;">{{ election.name }}</p>
+    <p style="margin: 0 0 10px 0; font-size: 16px; color: #333;">{{ election.date }} - <strong>{{ election.days_until }} days away</strong></p>
+    <p style="margin: 0; color: #555; font-size: 14px;">{{ election.positions_count }} position{{ election.positions_count|pluralize }}, {{ election.candidates_count }} candidate{{ election.candidates_count|pluralize }}</p>
+</div>
+{% endfor %}
+
+<hr class="divider">
+{% endif %}
+
+<h3>Your Activity</h3>
+
+<div style="background-color: #f5f5f5; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 8px 0;"><strong>Questions Asked:</strong></td>
+            <td style="padding: 8px 0; text-align: right; color: #2196f3;">{{ user_questions_count }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 0;"><strong>Votes Cast:</strong></td>
+            <td style="padding: 8px 0; text-align: right; color: #4caf50;">{{ user_votes_count }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 0;"><strong>Answers Received:</strong></td>
+            <td style="padding: 8px 0; text-align: right; color: #9c27b0;">{{ user_answers_received }}</td>
+        </tr>
+    </table>
+</div>
+
+<hr class="divider">
+
+<h3>Make Your Voice Heard</h3>
+
+<p>Stay engaged with your local democracy:</p>
+
+<ul>
+    <li><a href="{{ ask_question_url }}">Ask a new question</a> to candidates</li>
+    <li><a href="{{ browse_candidates_url }}">Browse candidates</a> and compare their positions</li>
+    <li><a href="{{ upvote_questions_url }}">Upvote questions</a> that matter to you</li>
+    <li><a href="{{ share_url }}">Share CivicQ</a> with friends and neighbors</li>
+</ul>
+
+<div style="background-color: #e3f2fd; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #2196f3;">
+    <p style="margin: 0;"><strong>Your Vote Matters:</strong> {{ days_until_next_election }} days until the next election. Make sure you're informed and ready to vote!</p>
+</div>
+
+<hr class="divider">
+
+<h3>Community Impact</h3>
+
+<p>This week across {{ city_name }}:</p>
+
+<ul>
+    <li><strong>{{ total_questions }}</strong> total questions asked</li>
+    <li><strong>{{ total_answers }}</strong> answers from candidates</li>
+    <li><strong>{{ total_voters }}</strong> active voters</li>
+    <li><strong>{{ engagement_rate }}%</strong> candidate response rate</li>
+</ul>
+
+<p style="font-size: 14px; color: #666; margin-top: 30px;">
+    You're receiving this weekly digest because you're a CivicQ member in {{ city_name }}.
+    <a href="{{ unsubscribe_url }}">Unsubscribe from weekly digests</a> | <a href="{{ email_preferences_url }}">Email preferences</a>
+</p>
+
+<p>Stay informed, stay engaged!</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

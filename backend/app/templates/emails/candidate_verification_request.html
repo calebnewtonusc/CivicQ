@@ -1,0 +1,91 @@
+{% extends "base_email.html" %}
+
+{% block title %}Verify Your Candidate Profile - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ candidate_name }},</h2>
+
+<p>Thank you for creating a candidate profile on CivicQ! To complete your registration, we need to verify your candidacy.</p>
+
+<div style="background-color: #fff3e0; border-left: 4px solid #ff9800; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #e65100;">Verification Required</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Position:</strong> {{ position }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Election:</strong> {{ election_name }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>City:</strong> {{ city_name }}, {{ state }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 0;">
+        <strong>Election Date:</strong> {{ election_date }}
+    </p>
+</div>
+
+<a href="{{ verification_url }}" class="button">Complete Verification</a>
+
+<hr class="divider">
+
+<h3>What We Need</h3>
+
+<p>To verify your candidacy, please provide one of the following:</p>
+
+<ul>
+    <li><strong>Official Filing Receipt:</strong> Documentation from your county/city clerk showing you've filed to run</li>
+    <li><strong>Campaign Finance Filing:</strong> Proof of campaign finance registration (Form 460, 497, etc.)</li>
+    <li><strong>Official Candidate List:</strong> Link to official election website listing you as a candidate</li>
+    <li><strong>Ballot Sample:</strong> Official ballot or sample ballot showing your name</li>
+    <li><strong>Campaign Website:</strong> Link to your official campaign website (will be verified)</li>
+</ul>
+
+<div style="background-color: #e3f2fd; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #2196f3;">
+    <p style="margin: 0;"><strong>Privacy Note:</strong> Verification documents are reviewed securely and not made public. Only your verified candidate status will be displayed.</p>
+</div>
+
+<hr class="divider">
+
+<h3>Why We Verify Candidates</h3>
+
+<p>Candidate verification ensures:</p>
+
+<ul>
+    <li><strong>Authenticity:</strong> Voters know they're interacting with real, official candidates</li>
+    <li><strong>Trust:</strong> Verified profiles build confidence in the platform</li>
+    <li><strong>Accuracy:</strong> Election information remains accurate and up-to-date</li>
+    <li><strong>Security:</strong> Prevents impersonation and fraud</li>
+</ul>
+
+<hr class="divider">
+
+<h3>Verification Process</h3>
+
+<div style="background-color: #f5f5f5; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <ol style="margin: 0; padding-left: 20px;">
+        <li style="margin-bottom: 15px;"><strong>Submit Documentation:</strong> Upload your verification documents (typically takes 2-3 minutes)</li>
+        <li style="margin-bottom: 15px;"><strong>Review:</strong> Our team reviews your submission (usually within 24 hours)</li>
+        <li style="margin-bottom: 15px;"><strong>Notification:</strong> You'll receive an email when verification is complete</li>
+        <li style="margin-bottom: 0;"><strong>Go Live:</strong> Once verified, your profile goes live and voters can start asking questions</li>
+    </ol>
+</div>
+
+<div style="background-color: #fff3e0; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #ff9800;">
+    <p style="margin: 0;"><strong>Time-Sensitive:</strong> We recommend completing verification at least 60 days before the election to maximize voter engagement.</p>
+</div>
+
+<hr class="divider">
+
+<h3>Need Help?</h3>
+
+<p>If you have questions about the verification process or need assistance gathering documents:</p>
+
+<ul>
+    <li><strong>Email Support:</strong> <a href="mailto:{{ support_email }}">{{ support_email }}</a></li>
+    <li><strong>Candidate Guide:</strong> <a href="{{ candidate_guide_url }}">View comprehensive candidate documentation</a></li>
+    <li><strong>FAQs:</strong> <a href="{{ faq_url }}">Common verification questions</a></li>
+</ul>
+
+<p>We're excited to help you connect with voters in {{ city_name }}!</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

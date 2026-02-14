@@ -1,0 +1,60 @@
+{% extends "base_email.html" %}
+
+{% block title %}New Question for You - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ candidate_name }},</h2>
+
+<p>A voter in {{ city_name }} has submitted a new question for you on CivicQ.</p>
+
+<div style="background-color: #fff3e0; border-left: 4px solid #ff9800; padding: 20px; margin: 25px 0; border-radius: 4px;">
+    <h3 style="margin-top: 0; color: #e65100;">New Question</h3>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Category:</strong> {{ category }}
+    </p>
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Upvotes:</strong> {{ upvote_count }}
+    </p>
+    {% if priority_level %}
+    <p style="font-size: 16px; color: #333; margin-bottom: 10px;">
+        <strong>Priority:</strong> <span style="color: #f57c00; font-weight: 600;">{{ priority_level }}</span>
+    </p>
+    {% endif %}
+    <p style="font-size: 15px; color: #555; line-height: 1.6; border-top: 1px solid #ffe0b2; padding-top: 15px; margin-top: 15px;">
+        "{{ question_text }}"
+    </p>
+</div>
+
+<a href="{{ answer_url }}" class="button">Answer This Question</a>
+
+<hr class="divider">
+
+<h3>Why Answering Matters</h3>
+
+<ul>
+    <li><strong>Build Trust:</strong> Transparent responses show voters you're accessible and accountable</li>
+    <li><strong>Showcase Your Vision:</strong> Use questions to highlight your policy positions and qualifications</li>
+    <li><strong>Reach More Voters:</strong> Your responses are shared across the platform and can be upvoted</li>
+    <li><strong>Stand Out:</strong> Candidates who engage actively tend to get more voter support</li>
+</ul>
+
+<div style="background-color: #e8f5e9; padding: 15px; margin: 20px 0; border-radius: 4px; border-left: 4px solid #4caf50;">
+    <p style="margin: 0;"><strong>Pro Tip:</strong> Video responses tend to get 3x more engagement than text-only answers. Consider recording a video response!</p>
+</div>
+
+<hr class="divider">
+
+<h3>Your Response Options</h3>
+
+<p>When answering, you can:</p>
+<ul>
+    <li>Provide a written response (required)</li>
+    <li>Upload a video response (recommended, max {{ max_video_length }} seconds)</li>
+    <li>Attach supporting documents or sources</li>
+    <li>Tag relevant policy positions from your campaign platform</li>
+</ul>
+
+<p>We recommend answering questions within 48 hours for the best voter engagement.</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}
