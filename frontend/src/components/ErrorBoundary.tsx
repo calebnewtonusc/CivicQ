@@ -21,6 +21,8 @@ class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error:', error, errorInfo);
+    console.error('Error stack:', error.stack);
+    console.error('Component stack:', errorInfo.componentStack);
   }
 
   public render() {
@@ -35,12 +37,14 @@ class ErrorBoundary extends Component<Props, State> {
               We're sorry, but something unexpected happened. Please try refreshing the page.
             </p>
             {this.state.error && (
-              <details className="mt-4">
+              <details className="mt-4" open>
                 <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
                   Error details
                 </summary>
-                <pre className="mt-2 text-xs bg-gray-100 p-2 rounded overflow-auto">
+                <pre className="mt-2 text-xs bg-gray-100 p-2 rounded overflow-auto max-h-64">
                   {this.state.error.toString()}
+                  {'\n\n'}
+                  {this.state.error.stack}
                 </pre>
               </details>
             )}
