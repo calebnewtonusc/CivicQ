@@ -46,8 +46,15 @@ class UserResponse(BaseModel):
     full_name: str
     role: UserRole
     city: str
+    city_id: Optional[str] = None  # Added for frontend compatibility
+    city_name: Optional[str] = None  # Added for frontend compatibility
     verification_status: VerificationStatus
+    phone_number: Optional[str] = None
+    is_active: bool = True
+    is_superuser: bool = False
+    last_active: Optional[datetime] = None
     created_at: datetime
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

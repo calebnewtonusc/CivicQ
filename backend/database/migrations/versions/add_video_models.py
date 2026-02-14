@@ -96,7 +96,7 @@ def upgrade():
 
         sa.PrimaryKeyConstraint('id'),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
-        sa.ForeignKeyConstraint(['answer_id'], ['answers.id'], ondelete='SET NULL'),
+        sa.ForeignKeyConstraint(['answer_id'], ['video_answers.id'], ondelete='SET NULL'),
     )
 
     # Create indexes

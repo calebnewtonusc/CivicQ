@@ -32,7 +32,7 @@ import {
 import { setDemoMode, getDemoMode } from './demoMode';
 
 // API Configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({
@@ -52,19 +52,51 @@ apiClient.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.error('Request interceptor error:', error);
+    return Promise.reject(error);
+  }
 );
 
-// Response interceptor for error handling
+// Response interceptor for error handling with comprehensive error handling
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError<ApiError>) => {
-    if (error.response?.status === 401) {
+    // Network error (no response from server)
+    if (!error.response) {
+      if (error.code === 'ERR_NETWORK') {
+        console.warn('Network error: Backend may be unavailable, falling back to demo mode where applicable');
+      } else if (error.code === 'ECONNABORTED') {
+        console.error('Request timeout:', error.message);
+      } else {
+        console.error('Request failed:', error.message);
+      }
+      return Promise.reject(error);
+    }
+
+    // Handle specific HTTP status codes
+    const status = error.response.status;
+
+    if (status === 401) {
       // Token expired or invalid
+      console.warn('Authentication failed: Token expired or invalid');
       localStorage.removeItem('access_token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+
+      // Only redirect if not already on login page
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
+      }
+    } else if (status === 403) {
+      console.error('Access forbidden: Insufficient permissions');
+    } else if (status === 404) {
+      console.warn('Resource not found:', error.config?.url);
+    } else if (status === 422) {
+      console.error('Validation error:', error.response.data);
+    } else if (status >= 500) {
+      console.error('Server error:', error.response.data);
     }
+
     return Promise.reject(error);
   }
 );

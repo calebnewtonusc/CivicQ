@@ -8,7 +8,6 @@ Loads from environment variables and .env file.
 from typing import List, Optional
 from pydantic_settings import BaseSettings
 from pydantic import AnyHttpUrl, validator
-import secrets
 
 
 class Settings(BaseSettings):
@@ -23,10 +22,19 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "CivicQ"
 
     # Security
-    SECRET_KEY: str = secrets.token_urlsafe(32)
+    SECRET_KEY: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+
+    @validator("SECRET_KEY")
+    def validate_secret_key(cls, v: str) -> str:
+        if not v or len(v) < 32:
+            raise ValueError(
+                "SECRET_KEY must be set in environment variables and be at least 32 characters long. "
+                "Generate one with: python -c 'import secrets; print(secrets.token_urlsafe(32))'"
+            )
+        return v
 
     # CORS
     ALLOWED_ORIGINS: List[str] = [
@@ -34,15 +42,28 @@ class Settings(BaseSettings):
         "http://localhost:8000",
     ]
 
-    ALLOWED_HOSTS: List[str] = ["*"]
-
     @validator("ALLOWED_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: str | List[str]) -> List[str]:
+        """Parse ALLOWED_ORIGINS from comma-separated string or list"""
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
         elif isinstance(v, list):
             return v
         raise ValueError(v)
+
+    @validator("ALLOWED_ORIGINS")
+    def validate_cors_origins(cls, v: List[str], values: dict) -> List[str]:
+        """Validate CORS origins are not wildcards in production"""
+        environment = values.get("ENVIRONMENT", "development")
+
+        if environment == "production":
+            if "*" in v or "http://*" in v or "https://*" in v:
+                raise ValueError(
+                    "ALLOWED_ORIGINS cannot contain wildcards (*) in production. "
+                    "Specify exact frontend origins (e.g., https://civicq.com)"
+                )
+
+        return v
 
     # Database
     DATABASE_URL: str = "postgresql://civicq:civicq@localhost:5432/civicq"
@@ -72,6 +93,11 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: Optional[str] = None
     DEEPGRAM_API_KEY: Optional[str] = None
     ASSEMBLYAI_API_KEY: Optional[str] = None
+
+    # AI/LLM Features
+    ANTHROPIC_API_KEY: Optional[str] = None
+    ANTHROPIC_MODEL: str = "claude-sonnet-4-5-20250929"
+    ENABLE_AI_FEATURES: bool = True
 
     # Embeddings for Question Clustering
     EMBEDDING_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"

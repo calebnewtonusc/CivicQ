@@ -6,6 +6,8 @@ import { VideoAnswerRecorder } from '../components/VideoAnswerRecorder';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || '${API_BASE_URL}';
+
 interface Question {
   id: number;
   question_text: string;
@@ -47,7 +49,7 @@ export default function CandidateAnswerPage() {
   const loadQuestion = async (qId: number) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8000/api/questions/${qId}`, {
+      const response = await fetch(`${API_BASE_URL}/questions/${qId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`
         }
@@ -144,7 +146,7 @@ export default function CandidateAnswerPage() {
                 </div>
               )}
 
-              {question.issue_tags && question.issue_tags.length > 0 && (
+              {Array.isArray(question.issue_tags) && question.issue_tags.length > 0 && (
                 <div className="mt-4 flex flex-wrap gap-2">
                   <span className="text-sm font-medium text-gray-700">Topics:</span>
                   {question.issue_tags.map((tag, idx) => (

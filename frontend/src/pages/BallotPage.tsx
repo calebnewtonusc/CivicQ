@@ -89,14 +89,14 @@ const BallotPage: React.FC = () => {
     );
   }
 
-  // Sort contests by display order
-  const sortedContests = ballot.contests
-    ? [...ballot.contests].sort((a, b) => a.display_order - b.display_order)
+  // Sort contests by display order with null checks
+  const sortedContests = Array.isArray(ballot.contests)
+    ? [...ballot.contests].sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
     : [];
 
-  // Separate races and measures
-  const races = sortedContests.filter((c) => c.type === 'race');
-  const measures = sortedContests.filter((c) => c.type === 'measure');
+  // Separate races and measures with defensive filtering
+  const races = sortedContests.filter((c) => c && c.type === 'race');
+  const measures = sortedContests.filter((c) => c && c.type === 'measure');
 
   return (
     <Layout>

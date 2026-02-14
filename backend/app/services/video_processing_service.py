@@ -13,6 +13,7 @@ import tempfile
 import logging
 from typing import Dict, List, Optional, Tuple
 from pathlib import Path
+from fractions import Fraction
 import shutil
 
 from app.core.config import settings
@@ -60,7 +61,46 @@ class VideoProcessingService:
     def __init__(self):
         """Initialize video processing service"""
         self.temp_dir = tempfile.gettempdir()
-        logger.info("Video processing service initialized")
+        self.ffmpeg_available = self._check_ffmpeg_installed()
+
+        if not self.ffmpeg_available:
+            logger.warning("ffmpeg not found. Video processing will not be available.")
+        else:
+            logger.info("Video processing service initialized with ffmpeg")
+
+    def _check_ffmpeg_installed(self) -> bool:
+        """
+        Check if ffmpeg is installed and available
+
+        Returns:
+            True if ffmpeg is available, False otherwise
+        """
+        try:
+            result = subprocess.run(
+                ['ffmpeg', '-version'],
+                capture_output=True,
+                timeout=5
+            )
+            return result.returncode == 0
+        except (FileNotFoundError, subprocess.TimeoutExpired):
+            return False
+        except Exception as e:
+            logger.error(f"Error checking ffmpeg availability: {e}")
+            return False
+
+    def _ensure_ffmpeg_available(self):
+        """
+        Ensure ffmpeg is available before processing
+
+        Raises:
+            RuntimeError: If ffmpeg is not available
+        """
+        if not self.ffmpeg_available:
+            raise RuntimeError(
+                "ffmpeg is not installed or not available in PATH. "
+                "Please install ffmpeg to enable video processing. "
+                "Visit https://ffmpeg.org/download.html for installation instructions."
+            )
 
     def get_video_metadata(self, input_path: str) -> Dict:
         """
@@ -72,6 +112,11 @@ class VideoProcessingService:
         Returns:
             Video metadata dict
         """
+        self._ensure_ffmpeg_available()
+
+        if not input_path or not os.path.exists(input_path):
+            raise FileNotFoundError(f"Video file not found: {input_path}")
+
         try:
             probe = ffmpeg.probe(input_path)
 
@@ -96,7 +141,7 @@ class VideoProcessingService:
                     'width': int(video_stream['width']),
                     'height': int(video_stream['height']),
                     'codec': video_stream['codec_name'],
-                    'fps': eval(video_stream['r_frame_rate']),  # Fraction like "30/1"
+                    'fps': float(Fraction(video_stream['r_frame_rate'])),  # Safely parse fraction like "30/1"
                     'video_bitrate': int(video_stream.get('bit_rate', 0))
                 })
 

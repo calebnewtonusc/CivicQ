@@ -98,6 +98,7 @@ class User(Base):
     votes = relationship("Vote", back_populates="user")
     reports = relationship("Report", back_populates="reporter")
     follows = relationship("Follow", back_populates="user")
+    videos = relationship("Video", back_populates="user")
 
     def __repr__(self):
         return f"<User {self.email} ({self.role})>"

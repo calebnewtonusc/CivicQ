@@ -42,11 +42,16 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
+    env_file:
+      - ./backend/.env
     environment:
+      # Override with Docker-specific values
       DATABASE_URL: postgresql://civicq:civicq@db:5432/civicq
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/1
       CELERY_RESULT_BACKEND: redis://redis:6379/1
+      BACKEND_URL: http://localhost:8000
+      FRONTEND_URL: http://localhost:3000
     volumes:
       - ./backend:/app
     depends_on:
@@ -64,8 +69,12 @@ services:
     container_name: civicq_frontend
     ports:
       - "3000:3000"
+    env_file:
+      - ./frontend/.env
     environment:
+      # Override with Docker-specific values
       REACT_APP_API_URL: http://localhost:8000/api
+      REACT_APP_BASE_URL: http://localhost:3000
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -80,7 +89,10 @@ services:
       dockerfile: Dockerfile
     container_name: civicq_celery_worker
     command: celery -A app.tasks worker --loglevel=info
+    env_file:
+      - ./backend/.env
     environment:
+      # Override with Docker-specific values
       DATABASE_URL: postgresql://civicq:civicq@db:5432/civicq
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/1

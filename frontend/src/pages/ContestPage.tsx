@@ -82,8 +82,11 @@ const ContestPage: React.FC = () => {
     );
   }
 
-  const questions = questionsData?.items || [];
-  const activeCandidates = candidates?.filter((c) => c.status === 'active') || [];
+  // Defensive null checks for questions and candidates
+  const questions = Array.isArray(questionsData?.items) ? questionsData.items : [];
+  const activeCandidates = Array.isArray(candidates)
+    ? candidates.filter((c) => c && c.status === 'active')
+    : [];
 
   return (
     <Layout>
@@ -318,7 +321,7 @@ const ContestPage: React.FC = () => {
                   label="Total Answers"
                   value={
                     activeCandidates.reduce(
-                      (sum, c) => sum + (c.video_answers?.length || 0),
+                      (sum, c) => sum + (Array.isArray(c?.video_answers) ? c.video_answers.length : 0),
                       0
                     )
                   }

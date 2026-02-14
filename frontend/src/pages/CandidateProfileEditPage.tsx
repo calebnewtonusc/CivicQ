@@ -6,6 +6,8 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import SuccessMessage from '../components/SuccessMessage';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || '${API_BASE_URL}';
+
 // This interface is for internal use only
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface CandidateProfile {
@@ -65,7 +67,7 @@ export default function CandidateProfileEditPage() {
   const loadProfile = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8000/api/candidates/${candidateId}`, {
+      const response = await fetch(`${API_BASE_URL}/candidates/${candidateId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`
         }
@@ -128,7 +130,7 @@ export default function CandidateProfileEditPage() {
         }
       };
 
-      const response = await fetch(`http://localhost:8000/api/candidates/${candidateId}/profile`, {
+      const response = await fetch(`${API_BASE_URL}/candidates/${candidateId}/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

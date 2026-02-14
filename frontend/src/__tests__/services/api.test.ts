@@ -29,7 +29,7 @@ describe('API Service', () => {
 
       expect(questions).toEqual(mockQuestions);
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/v1/questions/top'),
+        expect.stringContaining('/api/questions/top'),
         expect.any(Object)
       );
     });
@@ -85,7 +85,7 @@ describe('API Service', () => {
 
       expect(result).toEqual(mockResponse);
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/v1/questions'),
+        expect.stringContaining('/api/questions'),
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({
@@ -177,7 +177,7 @@ describe('API Service', () => {
 
   describe('API client configuration', () => {
     it('includes base URL in requests', () => {
-      expect(apiClient.defaults.baseURL).toContain('/api/v1');
+      expect(apiClient.defaults.baseURL).toContain('/api');
     });
 
     it('sets appropriate headers', () => {

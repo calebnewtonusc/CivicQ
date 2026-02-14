@@ -3,6 +3,8 @@ import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
 import SuccessMessage from './SuccessMessage';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+
 interface VideoAnswerRecorderProps {
   questionId: number;
   questionText: string;
@@ -52,6 +54,12 @@ export const VideoAnswerRecorder: React.FC<VideoAnswerRecorderProps> = ({
   const startCamera = async () => {
     try {
       setError(null);
+
+      // Check if mediaDevices API is available
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Media devices not supported in this browser. Please use a modern browser like Chrome, Firefox, or Safari.');
+      }
+
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: {
           width: { ideal: 1280 },
@@ -67,27 +75,70 @@ export const VideoAnswerRecorder: React.FC<VideoAnswerRecorderProps> = ({
       }
     } catch (err) {
       console.error('Error accessing camera:', err);
-      setError('Could not access camera and microphone. Please check permissions.');
+
+      // Provide specific error messages based on error type
+      let errorMessage = 'Could not access camera and microphone. ';
+
+      if (err instanceof Error) {
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+          errorMessage += 'Please allow camera and microphone permissions in your browser settings.';
+        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+          errorMessage += 'No camera or microphone found. Please connect a camera and microphone.';
+        } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+          errorMessage += 'Camera is already in use by another application.';
+        } else {
+          errorMessage += err.message || 'Please check permissions and try again.';
+        }
+      } else {
+        errorMessage += 'Please check permissions and try again.';
+      }
+
+      setError(errorMessage);
     }
   };
 
   const startRecording = () => {
-    if (!stream) return;
+    if (!stream) {
+      setError('No camera stream available. Please start the camera first.');
+      return;
+    }
 
     try {
+      setError(null);
       chunksRef.current = [];
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'video/webm;codecs=vp8,opus'
-      });
+
+      // Check MediaRecorder support
+      if (!window.MediaRecorder) {
+        throw new Error('Video recording is not supported in this browser.');
+      }
+
+      // Try different mime types for browser compatibility
+      let mimeType = 'video/webm;codecs=vp8,opus';
+      if (!MediaRecorder.isTypeSupported(mimeType)) {
+        mimeType = 'video/webm';
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+          mimeType = 'video/mp4';
+          if (!MediaRecorder.isTypeSupported(mimeType)) {
+            throw new Error('No supported video format found for recording.');
+          }
+        }
+      }
+
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
 
       mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
+        if (event.data && event.data.size > 0) {
           chunksRef.current.push(event.data);
         }
       };
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+        if (chunksRef.current.length === 0) {
+          setError('No video data recorded. Please try again.');
+          return;
+        }
+
+        const blob = new Blob(chunksRef.current, { type: mimeType });
         const url = URL.createObjectURL(blob);
         setRecordedVideoUrl(url);
         setIsPreviewing(true);
@@ -96,6 +147,16 @@ export const VideoAnswerRecorder: React.FC<VideoAnswerRecorderProps> = ({
         if (stream) {
           stream.getTracks().forEach(track => track.stop());
           setStream(null);
+        }
+      };
+
+      mediaRecorder.onerror = (event: Event) => {
+        console.error('MediaRecorder error:', event);
+        setError('Recording error occurred. Please try again.');
+        setIsRecording(false);
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
         }
       };
 
@@ -116,7 +177,8 @@ export const VideoAnswerRecorder: React.FC<VideoAnswerRecorderProps> = ({
       }, 1000);
     } catch (err) {
       console.error('Error starting recording:', err);
-      setError('Could not start recording. Please try again.');
+      const errorMessage = err instanceof Error ? err.message : 'Could not start recording. Please try again.';
+      setError(errorMessage);
     }
   };
 
@@ -143,11 +205,29 @@ export const VideoAnswerRecorder: React.FC<VideoAnswerRecorderProps> = ({
   };
 
   const uploadVideo = async () => {
-    if (!recordedVideoUrl) return;
+    if (!recordedVideoUrl) {
+      setError('No video to upload. Please record a video first.');
+      return;
+    }
 
     try {
       setIsUploading(true);
       setError(null);
+
+      // Fetch the blob from the object URL
+      const response = await fetch(recordedVideoUrl);
+      const blob = await response.blob();
+
+      // Validate blob size (max 500MB)
+      const maxSize = 500 * 1024 * 1024;
+      if (blob.size > maxSize) {
+        throw new Error('Video file is too large. Maximum size is 500MB.');
+      }
+
+      // Validate blob type
+      if (!blob.type.startsWith('video/')) {
+        throw new Error('Invalid video format.');
+      }
 
       // In a real implementation, you would:
       // 1. Convert the blob to a file
@@ -157,8 +237,8 @@ export const VideoAnswerRecorder: React.FC<VideoAnswerRecorderProps> = ({
       // For demo purposes, we'll simulate an upload
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // Mock submission
-      const response = await fetch(`http://localhost:8000/api/candidates/${candidateId}/answers`, {
+      // Mock submission with proper error handling
+      const submitResponse = await fetch(`${API_BASE_URL.replace('/api', '')}/api/candidates/${candidateId}/answers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -172,8 +252,9 @@ export const VideoAnswerRecorder: React.FC<VideoAnswerRecorderProps> = ({
         })
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to submit answer');
+      if (!submitResponse.ok) {
+        const errorData = await submitResponse.json().catch(() => ({ detail: 'Failed to submit answer' }));
+        throw new Error(errorData.detail || `Server error: ${submitResponse.status}`);
       }
 
       setSuccess('Answer submitted successfully!');
@@ -182,7 +263,8 @@ export const VideoAnswerRecorder: React.FC<VideoAnswerRecorderProps> = ({
       }, 1500);
     } catch (err) {
       console.error('Error uploading video:', err);
-      setError('Failed to upload video. Please try again.');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to upload video. Please try again.';
+      setError(errorMessage);
     } finally {
       setIsUploading(false);
     }

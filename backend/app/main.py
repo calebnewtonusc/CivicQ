@@ -112,7 +112,7 @@ app.include_router(admin.router, prefix="/api/admin", tags=["Admin - Ballot Impo
 app.include_router(admin_moderation_router, prefix="/api/admin", tags=["Admin - Moderation"])
 app.include_router(cities.router, prefix="/api", tags=["Cities"])
 app.include_router(videos.router, prefix="/api/videos", tags=["Videos"])
-app.include_router(llm.router, prefix="/api/v1/llm", tags=["AI Features"])
+app.include_router(llm.router, prefix="/api/llm", tags=["AI Features"])
 
 
 # Global exception handler
