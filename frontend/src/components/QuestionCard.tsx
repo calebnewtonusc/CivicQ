@@ -8,7 +8,7 @@ interface QuestionCardProps {
   showContest?: boolean;
 }
 
-const QuestionCard: React.FC<QuestionCardProps> = ({ question, showContest = false }) => {
+const QuestionCard: React.FC<QuestionCardProps> = ({ question, showContest: _showContest = false }) => {
   const netVotes = question.upvotes - question.downvotes;
 
   return (

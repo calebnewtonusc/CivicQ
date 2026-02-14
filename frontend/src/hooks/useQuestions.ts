@@ -61,7 +61,7 @@ export const useDeleteQuestion = () => {
 
   return useMutation({
     mutationFn: (id: number) => questionAPI.delete(id),
-    onSuccess: (_, id) => {
+    onSuccess: (_, _id) => {
       // Invalidate all question queries
       queryClient.invalidateQueries({ queryKey: ['questions'] });
       queryClient.invalidateQueries({ queryKey: ['contests'] });
