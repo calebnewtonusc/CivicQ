@@ -13,16 +13,30 @@ import NotFoundPage from './pages/NotFoundPage';
 // Lazy load all other pages for better code splitting
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
 const BallotPage = lazy(() => import('./pages/BallotPage'));
 const ContestPage = lazy(() => import('./pages/ContestPage'));
 const QuestionPage = lazy(() => import('./pages/QuestionPage'));
 const CandidatePage = lazy(() => import('./pages/CandidatePage'));
+
+// Public Pages (lazy loaded)
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const HowItWorksPage = lazy(() => import('./pages/HowItWorksPage'));
+const QuestionsPage = lazy(() => import('./pages/QuestionsPage'));
+
+// User Pages (lazy loaded)
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const MyQuestionsPage = lazy(() => import('./pages/MyQuestionsPage'));
 
 // Candidate Portal Pages (lazy loaded)
 const CandidateDashboardPage = lazy(() => import('./pages/CandidateDashboardPage'));
 const CandidateProfileEditPage = lazy(() => import('./pages/CandidateProfileEditPage'));
 const CandidateAnswerPage = lazy(() => import('./pages/CandidateAnswerPage'));
 const CandidateOnboardingPage = lazy(() => import('./pages/CandidateOnboardingPage'));
+const CandidateEditPage = lazy(() => import('./pages/CandidateEditPage'));
+const CandidateQuestionsPage = lazy(() => import('./pages/CandidateQuestionsPage'));
+const CandidateRecordPage = lazy(() => import('./pages/CandidateRecordPage'));
 
 // City Onboarding Pages (lazy loaded)
 const CityRegistrationPage = lazy(() => import('./pages/CityRegistrationPage'));
@@ -30,6 +44,7 @@ const CitySetupWizardPage = lazy(() => import('./pages/CitySetupWizardPage'));
 const CityDashboardPage = lazy(() => import('./pages/CityDashboardPage'));
 const CityBallotImportPage = lazy(() => import('./pages/CityBallotImportPage'));
 const CityPendingVerificationPage = lazy(() => import('./pages/CityPendingVerificationPage'));
+const CitySettingsPage = lazy(() => import('./pages/CitySettingsPage'));
 
 // Admin Panel Pages (lazy loaded)
 const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
@@ -80,22 +95,37 @@ function App() {
                   <Route path="/" element={<SimpleHomePage />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                   <Route path="/ballot" element={<BallotPage />} />
                   <Route path="/contest/:contestId" element={<ContestPage />} />
                   <Route path="/question/:questionId" element={<QuestionPage />} />
                   <Route path="/candidate/:candidateId" element={<CandidatePage />} />
+
+                  {/* Public Pages */}
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/how-it-works" element={<HowItWorksPage />} />
+                  <Route path="/questions" element={<QuestionsPage />} />
+
+                  {/* User Pages */}
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/my-questions" element={<MyQuestionsPage />} />
 
                   {/* Candidate Portal Routes */}
                   <Route path="/candidate/dashboard" element={<CandidateDashboardPage />} />
                   <Route path="/candidate/profile/edit" element={<CandidateProfileEditPage />} />
                   <Route path="/candidate/answer/:questionId" element={<CandidateAnswerPage />} />
                   <Route path="/candidate/onboarding" element={<CandidateOnboardingPage />} />
+                  <Route path="/candidate/:candidateId/edit" element={<CandidateEditPage />} />
+                  <Route path="/candidate/:candidateId/questions" element={<CandidateQuestionsPage />} />
+                  <Route path="/candidate/:candidateId/record" element={<CandidateRecordPage />} />
 
                   {/* City Onboarding Routes */}
                   <Route path="/city/register" element={<CityRegistrationPage />} />
                   <Route path="/city/:cityId/pending-verification" element={<CityPendingVerificationPage />} />
                   <Route path="/city/:cityId/setup" element={<CitySetupWizardPage />} />
                   <Route path="/city/:cityId/dashboard" element={<CityDashboardPage />} />
+                  <Route path="/city/:cityId/settings" element={<CitySettingsPage />} />
                   <Route path="/city/:cityId/import/manual" element={<CityBallotImportPage />} />
 
                   {/* Admin Panel Routes */}
