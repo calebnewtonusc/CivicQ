@@ -1,0 +1,36 @@
+{% extends "base_email.html" %}
+
+{% block title %}Verify Your Email - CivicQ{% endblock %}
+
+{% block content %}
+<h2>Hi {{ user_name }},</h2>
+
+<p>Thank you for signing up for CivicQ! We're excited to have you join our community of engaged citizens.</p>
+
+<p>To get started, please verify your email address by clicking the button below:</p>
+
+<div style="text-align: center;">
+    <a href="{{ verification_url }}" class="button">Verify Email Address</a>
+</div>
+
+<p>Or copy and paste this link into your browser:</p>
+<p style="word-break: break-all; color: #667eea; font-size: 14px;">{{ verification_url }}</p>
+
+<hr class="divider">
+
+<p><strong>Why verify?</strong></p>
+<ul>
+    <li>Access all CivicQ features</li>
+    <li>Ask questions to candidates and officials</li>
+    <li>Vote on community questions</li>
+    <li>Stay informed about local issues</li>
+</ul>
+
+<div class="warning">
+    <strong>Security Notice:</strong> This verification link will expire in 24 hours. If you didn't create a CivicQ account, you can safely ignore this email.
+</div>
+
+<p>If you have any questions, feel free to reach out to our support team.</p>
+
+<p>Best regards,<br>The CivicQ Team</p>
+{% endblock %}

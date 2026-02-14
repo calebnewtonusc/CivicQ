@@ -58,4 +58,5 @@ const InfoMessage: React.FC<InfoMessageProps> = ({ message, title, onDismiss }) 
   );
 };
 
+export { InfoMessage };
 export default InfoMessage;

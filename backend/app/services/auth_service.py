@@ -12,9 +12,14 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
 from app.models.user import User, VerificationRecord, VerificationStatus, VerificationMethod, UserRole
-from app.schemas.user import UserCreate, UserLogin, Token, VerificationStart, VerificationComplete, UserResponse
+from app.schemas.user import (
+    UserCreate, UserLogin, Token, VerificationStart, VerificationComplete, UserResponse,
+    PasswordResetRequest, PasswordResetConfirm, PasswordChange
+)
 from app.core.security import verify_password, get_password_hash, create_access_token
 from app.core.config import settings
+from app.services.email_service import email_service
+from app.services.session_service import session_service
 
 
 class AuthService:
@@ -256,3 +261,217 @@ class AuthService:
             User object or None if not found
         """
         return db.query(User).filter(User.id == user_id).first()
+
+    @staticmethod
+    def request_password_reset(db: Session, email: str) -> bool:
+        """
+        Request password reset
+
+        Args:
+            db: Database session
+            email: User's email address
+
+        Returns:
+            True if reset email sent (always returns True to prevent email enumeration)
+        """
+        user = db.query(User).filter(User.email == email).first()
+
+        if not user:
+            # Return True anyway to prevent email enumeration
+            return True
+
+        # Generate reset token
+        reset_token = secrets.token_urlsafe(32)
+
+        # Store token and expiration
+        user.password_reset_token = reset_token
+        user.password_reset_expires = datetime.utcnow() + timedelta(hours=1)
+
+        db.commit()
+
+        # Send password reset email
+        email_service.send_password_reset_email(
+            to_email=user.email,
+            reset_token=reset_token,
+            user_name=user.full_name
+        )
+
+        return True
+
+    @staticmethod
+    def reset_password(db: Session, token: str, new_password: str) -> bool:
+        """
+        Reset password using token
+
+        Args:
+            db: Database session
+            token: Password reset token
+            new_password: New password
+
+        Returns:
+            True if password reset successfully
+
+        Raises:
+            HTTPException: If token is invalid or expired
+        """
+        user = db.query(User).filter(
+            User.password_reset_token == token
+        ).first()
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid reset token"
+            )
+
+        # Check if token expired
+        if user.password_reset_expires and user.password_reset_expires < datetime.utcnow():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Reset token has expired"
+            )
+
+        # Update password
+        user.hashed_password = get_password_hash(new_password)
+        user.password_reset_token = None
+        user.password_reset_expires = None
+
+        db.commit()
+
+        # Invalidate all existing sessions
+        session_service.delete_all_user_sessions(user.id)
+
+        # Send confirmation email
+        email_service.send_password_changed_email(
+            to_email=user.email,
+            user_name=user.full_name
+        )
+
+        return True
+
+    @staticmethod
+    def change_password(
+        db: Session,
+        user: User,
+        current_password: str,
+        new_password: str
+    ) -> bool:
+        """
+        Change password for authenticated user
+
+        Args:
+            db: Database session
+            user: User object
+            current_password: Current password
+            new_password: New password
+
+        Returns:
+            True if password changed successfully
+
+        Raises:
+            HTTPException: If current password is incorrect
+        """
+        # Verify current password
+        if not verify_password(current_password, user.hashed_password):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Current password is incorrect"
+            )
+
+        # Update password
+        user.hashed_password = get_password_hash(new_password)
+        db.commit()
+
+        # Invalidate all existing sessions
+        session_service.delete_all_user_sessions(user.id)
+
+        # Send confirmation email
+        email_service.send_password_changed_email(
+            to_email=user.email,
+            user_name=user.full_name
+        )
+
+        return True
+
+    @staticmethod
+    def request_email_verification(db: Session, user: User) -> bool:
+        """
+        Request email verification
+
+        Args:
+            db: Database session
+            user: User object
+
+        Returns:
+            True if verification email sent
+        """
+        if user.email_verified:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already verified"
+            )
+
+        # Generate verification token
+        verification_token = secrets.token_urlsafe(32)
+
+        # Store token and expiration
+        user.email_verification_token = verification_token
+        user.email_verification_expires = datetime.utcnow() + timedelta(hours=24)
+
+        db.commit()
+
+        # Send verification email
+        email_service.send_verification_email(
+            to_email=user.email,
+            verification_token=verification_token,
+            user_name=user.full_name
+        )
+
+        return True
+
+    @staticmethod
+    def verify_email(db: Session, token: str) -> User:
+        """
+        Verify email using token
+
+        Args:
+            db: Database session
+            token: Email verification token
+
+        Returns:
+            User object
+
+        Raises:
+            HTTPException: If token is invalid or expired
+        """
+        user = db.query(User).filter(
+            User.email_verification_token == token
+        ).first()
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid verification token"
+            )
+
+        # Check if token expired
+        if user.email_verification_expires and user.email_verification_expires < datetime.utcnow():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Verification token has expired"
+            )
+
+        # Mark email as verified
+        user.email_verified = True
+        user.email_verification_token = None
+        user.email_verification_expires = None
+
+        db.commit()
+
+        # Send welcome email
+        email_service.send_welcome_email(
+            to_email=user.email,
+            user_name=user.full_name
+        )
+
+        return user

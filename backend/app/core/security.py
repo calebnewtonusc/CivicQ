@@ -102,3 +102,15 @@ def get_current_admin(
             detail="Admin privileges required"
         )
     return current_user
+
+
+def require_admin(
+    current_user: User = Depends(get_current_user)
+) -> User:
+    """Require admin, moderator, or city_staff role"""
+    if current_user.role not in ["admin", "moderator", "city_staff"] and not current_user.is_superuser:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin or moderator privileges required"
+        )
+    return current_user

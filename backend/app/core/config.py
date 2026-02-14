@@ -101,6 +101,21 @@ class Settings(BaseSettings):
     SMTP_USER: Optional[str] = None
     SMTP_PASSWORD: Optional[str] = None
     EMAIL_FROM: str = "noreply@civicq.org"
+    SENDGRID_API_KEY: Optional[str] = None
+
+    # Frontend/Backend URLs
+    FRONTEND_URL: str = "http://localhost:3000"
+    BACKEND_URL: str = "http://localhost:8000"
+
+    # OAuth Settings
+    GOOGLE_CLIENT_ID: Optional[str] = None
+    GOOGLE_CLIENT_SECRET: Optional[str] = None
+    FACEBOOK_CLIENT_ID: Optional[str] = None
+    FACEBOOK_CLIENT_SECRET: Optional[str] = None
+
+    # Session Settings
+    SESSION_EXPIRE_SECONDS: int = 86400  # 24 hours
+    REMEMBER_ME_EXPIRE_SECONDS: int = 2592000  # 30 days
 
     # Moderation
     AUTO_MODERATE: bool = True
@@ -121,6 +136,11 @@ class Settings(BaseSettings):
     ENABLE_REBUTTALS: bool = True
     ENABLE_SOURCE_ATTACHMENTS: bool = True
     ENABLE_VIEWPOINT_CLUSTERING: bool = True
+
+    # External Ballot Data APIs
+    GOOGLE_CIVIC_API_KEY: Optional[str] = None
+    VOTE_AMERICA_API_KEY: Optional[str] = None
+    BALLOTPEDIA_API_KEY: Optional[str] = None
 
     class Config:
         env_file = ".env"

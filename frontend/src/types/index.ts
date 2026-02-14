@@ -321,3 +321,151 @@ export interface LLMHealthResponse {
   model?: string;
   error?: string;
 }
+
+// Admin Panel Types
+
+export enum AdminPermission {
+  VIEW_DASHBOARD = 'view_dashboard',
+  MODERATE_QUESTIONS = 'moderate_questions',
+  MODERATE_CONTENT = 'moderate_content',
+  MANAGE_USERS = 'manage_users',
+  VIEW_ANALYTICS = 'view_analytics',
+  MANAGE_CITY_CONFIG = 'manage_city_config',
+  VIEW_AUDIT_LOG = 'view_audit_log',
+  MANAGE_ELECTIONS = 'manage_elections',
+  BULK_OPERATIONS = 'bulk_operations',
+}
+
+export interface AdminStats {
+  total_users: number;
+  active_users_24h: number;
+  total_questions: number;
+  pending_questions: number;
+  flagged_content: number;
+  total_answers: number;
+  total_votes: number;
+  engagement_rate: number;
+}
+
+export enum ReportStatus {
+  PENDING = 'pending',
+  REVIEWING = 'reviewing',
+  RESOLVED = 'resolved',
+  DISMISSED = 'dismissed',
+}
+
+export interface Report {
+  id: number;
+  reporter_id?: number;
+  reported_user_id?: number;
+  target_type?: 'question' | 'answer' | 'comment';
+  target_id?: number;
+  reason: string;
+  description?: string;
+  status: ReportStatus;
+  resolution_notes?: string;
+  resolved_by?: number;
+  resolved_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ModerationQueueItem {
+  id: number;
+  type: 'question' | 'answer' | 'user_report';
+  content: Question | VideoAnswer | Report;
+  status: QuestionStatus | AnswerStatus | string;
+  submitted_at: string;
+  flagged_count?: number;
+  priority: 'low' | 'medium' | 'high' | 'critical';
+}
+
+export interface UserActivity {
+  user: User;
+  questions_submitted: number;
+  votes_cast: number;
+  reports_filed: number;
+  warnings: number;
+  last_warning?: string;
+  account_status: 'active' | 'warned' | 'suspended' | 'banned';
+}
+
+export interface AnalyticsData {
+  daily_active_users: Array<{ date: string; count: number }>;
+  question_submissions: Array<{ date: string; count: number }>;
+  vote_activity: Array<{ date: string; count: number }>;
+  top_topics: Array<{ tag: string; count: number }>;
+  answer_coverage: {
+    total_questions: number;
+    answered_questions: number;
+    coverage_percentage: number;
+  };
+  user_demographics: {
+    by_city: Array<{ city: string; count: number }>;
+    by_verification_status: Array<{ status: string; count: number }>;
+  };
+}
+
+export interface ModerationRequest {
+  action: 'approve' | 'reject' | 'merge' | 'flag' | 'remove';
+  target_type: 'question' | 'answer' | 'user';
+  target_ids: number[];
+  reason?: string;
+  merge_into_id?: number;
+  notes?: string;
+}
+
+export interface UserModerationAction {
+  user_id: number;
+  action: 'warn' | 'suspend' | 'ban' | 'restore';
+  duration_days?: number;
+  reason: string;
+  notes?: string;
+}
+
+export interface BulkOperationResult {
+  success_count: number;
+  failure_count: number;
+  errors: Array<{ id: number; error: string }>;
+}
+
+export interface ElectionConfig {
+  id?: number;
+  city_id: string;
+  election_date: string;
+  election_name: string;
+  registration_deadline?: string;
+  early_voting_start?: string;
+  early_voting_end?: string;
+  question_deadline?: string;
+  answer_deadline?: string;
+  is_active: boolean;
+}
+
+export interface CitySettings {
+  city_id: string;
+  city_name: string;
+  allow_question_submission: boolean;
+  require_verification: boolean;
+  moderation_mode: 'auto' | 'manual' | 'hybrid';
+  min_vote_weight: number;
+  allow_anonymous_questions: boolean;
+  enable_ai_features: boolean;
+  custom_branding?: {
+    logo_url?: string;
+    primary_color?: string;
+    accent_color?: string;
+  };
+}
+
+export interface AuditLog {
+  id: number;
+  event_type: string;
+  actor_id?: number;
+  target_type?: string;
+  target_id?: number;
+  event_data?: Record<string, any>;
+  severity: 'info' | 'warning' | 'critical';
+  city_scope?: string;
+  created_at: string;
+}

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout } from '../components/Layout';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { ErrorMessage } from '../components/ErrorMessage';
+import { Layout } from '../components';
+import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
 
 type OnboardingStep = 'welcome' | 'verify' | 'profile' | 'complete';
 
@@ -421,7 +421,7 @@ export default function CandidateOnboardingPage() {
           >
             {loading ? (
               <>
-                <LoadingSpinner size="small" className="mr-2" />
+                <LoadingSpinner size="sm" className="mr-2" />
                 Processing...
               </>
             ) : currentStep === 'complete' ? (

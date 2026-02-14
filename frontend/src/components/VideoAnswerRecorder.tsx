@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { LoadingSpinner } from './LoadingSpinner';
-import { ErrorMessage } from './ErrorMessage';
-import { SuccessMessage } from './SuccessMessage';
+import LoadingSpinner from './LoadingSpinner';
+import ErrorMessage from './ErrorMessage';
+import SuccessMessage from './SuccessMessage';
 
 interface VideoAnswerRecorderProps {
   questionId: number;
@@ -302,7 +302,7 @@ export const VideoAnswerRecorder: React.FC<VideoAnswerRecorderProps> = ({
             >
               {isUploading ? (
                 <>
-                  <LoadingSpinner size="small" className="mr-2" />
+                  <LoadingSpinner size="sm" className="mr-2" />
                   Uploading...
                 </>
               ) : (

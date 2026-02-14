@@ -3,11 +3,12 @@ import React from 'react';
 interface SuccessMessageProps {
   message: string;
   onDismiss?: () => void;
+  className?: string;
 }
 
-const SuccessMessage: React.FC<SuccessMessageProps> = ({ message, onDismiss }) => {
+const SuccessMessage: React.FC<SuccessMessageProps> = ({ message, onDismiss, className = '' }) => {
   return (
-    <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+    <div className={`bg-green-50 border border-green-200 rounded-lg p-6 ${className}`}>
       <div className="flex items-start">
         <div className="flex-shrink-0">
           <svg
@@ -55,4 +56,5 @@ const SuccessMessage: React.FC<SuccessMessageProps> = ({ message, onDismiss }) =
   );
 };
 
+export { SuccessMessage };
 export default SuccessMessage;

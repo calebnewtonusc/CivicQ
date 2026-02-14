@@ -10,6 +10,8 @@ from app.models.question import Question, QuestionVersion, Vote
 from app.models.answer import VideoAnswer, Rebuttal, Claim
 from app.models.moderation import Report, ModerationAction, AuditLog
 from app.models.follow import Follow
+from app.models.city import City, CityStaff, CityInvitation
+from app.models.video import Video, VideoAnalytics
 
 __all__ = [
     "User",
@@ -28,4 +30,9 @@ __all__ = [
     "ModerationAction",
     "AuditLog",
     "Follow",
+    "City",
+    "CityStaff",
+    "CityInvitation",
+    "Video",
+    "VideoAnalytics",
 ]

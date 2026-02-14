@@ -71,9 +71,26 @@ class User(Base):
         nullable=False
     )
     verification_token = Column(String, nullable=True)  # Minimal verification token
+    email_verified = Column(Boolean, default=False, nullable=False)
+    email_verification_token = Column(String, nullable=True)
+    email_verification_expires = Column(DateTime, nullable=True)
+
+    # Password Reset
+    password_reset_token = Column(String, nullable=True)
+    password_reset_expires = Column(DateTime, nullable=True)
+
+    # Two-Factor Authentication
+    two_factor_enabled = Column(Boolean, default=False, nullable=False)
+    two_factor_secret = Column(String, nullable=True)  # TOTP secret
+    backup_codes = Column(JSON, nullable=True)  # Encrypted backup codes
+
+    # OAuth
+    oauth_provider = Column(String, nullable=True)  # 'google', 'facebook', etc.
+    oauth_id = Column(String, nullable=True)  # Provider's user ID
 
     # Activity tracking
     last_active = Column(DateTime, default=datetime.utcnow)
+    last_login = Column(DateTime, nullable=True)
 
     # Relationships
     verification_records = relationship("VerificationRecord", back_populates="user")
