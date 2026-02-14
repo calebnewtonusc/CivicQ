@@ -41,6 +41,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     kind: 'subtitles',
                     src: answer.captions_url,
                     srcLang: 'en',
+                    label: 'English',
                     default: true,
                   },
                 ]
