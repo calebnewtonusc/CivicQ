@@ -11,7 +11,7 @@ import ErrorMessage from '../components/ErrorMessage';
 
 const ContestPage: React.FC = () => {
   const { contestId } = useParams<{ contestId: string }>();
-  const { user: _user, isAuthenticated } = useAuthContext();
+  const { isAuthenticated } = useAuthContext();
   const [showQuestionForm, setShowQuestionForm] = useState(false);
   const [questionText, setQuestionText] = useState('');
   const [questionContext, setQuestionContext] = useState('');
