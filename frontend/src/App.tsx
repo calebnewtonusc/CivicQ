@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './contexts/AuthContext';
 
 // Pages
-import HomePage from './pages/HomePage';
+import SimpleHomePage from './pages/SimpleHomePage';
 import BallotPage from './pages/BallotPage';
 import ContestPage from './pages/ContestPage';
 import QuestionPage from './pages/QuestionPage';
@@ -28,7 +28,7 @@ function App() {
         <BrowserRouter>
           <div className="min-h-screen bg-gray-50">
             <Routes>
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<SimpleHomePage />} />
               <Route path="/ballot" element={<BallotPage />} />
               <Route path="/contest/:contestId" element={<ContestPage />} />
               <Route path="/question/:questionId" element={<QuestionPage />} />
