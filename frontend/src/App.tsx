@@ -5,10 +5,13 @@ import { AuthProvider } from './contexts/AuthContext';
 
 // Pages
 import SimpleHomePage from './pages/SimpleHomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import BallotPage from './pages/BallotPage';
 import ContestPage from './pages/ContestPage';
 import QuestionPage from './pages/QuestionPage';
 import CandidatePage from './pages/CandidatePage';
+import NotFoundPage from './pages/NotFoundPage';
 
 // Create React Query client
 const queryClient = new QueryClient({
@@ -29,10 +32,13 @@ function App() {
           <div className="min-h-screen bg-gray-50">
             <Routes>
               <Route path="/" element={<SimpleHomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
               <Route path="/ballot" element={<BallotPage />} />
               <Route path="/contest/:contestId" element={<ContestPage />} />
               <Route path="/question/:questionId" element={<QuestionPage />} />
               <Route path="/candidate/:candidateId" element={<CandidatePage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </div>
         </BrowserRouter>
