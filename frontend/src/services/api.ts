@@ -13,6 +13,10 @@ import {
   QuestionSubmit,
   PaginatedResponse,
   ApiError,
+  QuestionAnalysisResponse,
+  DuplicateCheckResult,
+  SuggestedQuestionsResponse,
+  LLMHealthResponse,
 } from '../types';
 
 // API Configuration
@@ -250,6 +254,105 @@ export const videoAnswerAPI = {
 
   delete: async (id: number): Promise<void> => {
     await apiClient.delete(`/answers/${id}`);
+  },
+};
+
+// LLM/AI Features API
+export const llmAPI = {
+  analyzeQuestion: async (
+    questionText: string,
+    contestId: number
+  ): Promise<QuestionAnalysisResponse> => {
+    try {
+      const response = await apiClient.post<QuestionAnalysisResponse>(
+        '/llm/analyze-question',
+        {
+          question_text: questionText,
+          contest_id: contestId,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      // Return mock data if backend is unavailable
+      if (axios.isAxiosError(error) && !error.response) {
+        return {
+          analysis: {
+            quality_score: 75,
+            is_appropriate: true,
+            category: 'General',
+            issues: [],
+            suggestions: [],
+          },
+          success: false,
+          message: 'AI analysis unavailable in demo mode',
+        };
+      }
+      throw error;
+    }
+  },
+
+  checkDuplicate: async (
+    questionText: string,
+    contestId: number
+  ): Promise<DuplicateCheckResult> => {
+    try {
+      const response = await apiClient.post<DuplicateCheckResult>(
+        '/llm/check-duplicate',
+        {
+          question_text: questionText,
+          contest_id: contestId,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      // Return mock data if backend is unavailable
+      if (axios.isAxiosError(error) && !error.response) {
+        return {
+          is_duplicate: false,
+          similarity_score: 0,
+          explanation: 'Duplicate check unavailable in demo mode',
+          success: false,
+        };
+      }
+      throw error;
+    }
+  },
+
+  getSuggestedQuestions: async (
+    contestId: number,
+    numSuggestions: number = 5
+  ): Promise<SuggestedQuestionsResponse> => {
+    try {
+      const response = await apiClient.get<SuggestedQuestionsResponse>(
+        `/llm/suggested-questions/${contestId}?num_suggestions=${numSuggestions}`
+      );
+      return response.data;
+    } catch (error) {
+      // Return mock data if backend is unavailable
+      if (axios.isAxiosError(error) && !error.response) {
+        return {
+          questions: [
+            'What is your plan to address housing affordability in our city?',
+            'How will you work to improve public safety while maintaining community trust?',
+            'What are your priorities for infrastructure improvements?',
+          ],
+          success: false,
+        };
+      }
+      throw error;
+    }
+  },
+
+  checkHealth: async (): Promise<LLMHealthResponse> => {
+    try {
+      const response = await apiClient.get<LLMHealthResponse>('/llm/health');
+      return response.data;
+    } catch (error) {
+      return {
+        status: 'unhealthy',
+        error: 'LLM service unavailable',
+      };
+    }
   },
 };
 

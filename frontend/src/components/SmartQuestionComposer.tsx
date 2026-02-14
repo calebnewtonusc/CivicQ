@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-
-interface QuestionAnalysis {
-  quality_score: number;
-  is_appropriate: boolean;
-  category: string;
-  subcategory?: string;
-  issues: string[];
-  suggestions: string[];
-  improved_version?: string;
-}
+import { llmAPI } from '../services/api';
+import { QuestionAnalysis } from '../types';
 
 interface SmartQuestionComposerProps {
   contestId: number;
@@ -31,11 +22,8 @@ const SmartQuestionComposer: React.FC<SmartQuestionComposerProps> = ({
   // Analyze question mutation
   const analyzeMutation = useMutation({
     mutationFn: async (text: string) => {
-      const response = await axios.post('/api/v1/llm/analyze-question', {
-        question_text: text,
-        contest_id: contestId,
-      });
-      return response.data.analysis;
+      const response = await llmAPI.analyzeQuestion(text, contestId);
+      return response.analysis;
     },
     onSuccess: (data) => {
       setAnalysis(data);
@@ -46,11 +34,8 @@ const SmartQuestionComposer: React.FC<SmartQuestionComposerProps> = ({
   // Check duplicate mutation
   const duplicateCheckMutation = useMutation({
     mutationFn: async (text: string) => {
-      const response = await axios.post('/api/v1/llm/check-duplicate', {
-        question_text: text,
-        contest_id: contestId,
-      });
-      return response.data;
+      const response = await llmAPI.checkDuplicate(text, contestId);
+      return response;
     },
     onSuccess: (data) => {
       setIsDuplicate(data.is_duplicate);
@@ -61,10 +46,8 @@ const SmartQuestionComposer: React.FC<SmartQuestionComposerProps> = ({
   const { data: suggestedQuestions } = useQuery({
     queryKey: ['suggested-questions', contestId],
     queryFn: async () => {
-      const response = await axios.get(
-        `/api/v1/llm/suggested-questions/${contestId}?num_suggestions=3`
-      );
-      return response.data.questions;
+      const response = await llmAPI.getSuggestedQuestions(contestId, 3);
+      return response.questions;
     },
     enabled: questionText.length === 0, // Only show when starting fresh
   });
