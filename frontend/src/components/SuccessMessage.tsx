@@ -2,47 +2,48 @@ import React from 'react';
 
 interface SuccessMessageProps {
   message: string;
+  title?: string;
   onDismiss?: () => void;
   className?: string;
 }
 
-const SuccessMessage: React.FC<SuccessMessageProps> = ({ message, onDismiss, className = '' }) => {
+const SuccessMessage: React.FC<SuccessMessageProps> = ({
+  message,
+  title = 'Success',
+  onDismiss,
+  className = '',
+}) => {
   return (
-    <div className={`bg-green-50 border border-green-200 rounded-lg p-6 ${className}`}>
-      <div className="flex items-start">
-        <div className="flex-shrink-0">
+    <div
+      role="status"
+      className={`bg-success-50 border border-success-200 rounded-xl p-4 animate-fade-in ${className}`}
+    >
+      <div className="flex items-start gap-3">
+        <div className="flex-shrink-0 mt-0.5">
           <svg
-            className="h-6 w-6 text-green-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+            className="w-5 h-5 text-success-500"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
           >
             <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              fillRule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clipRule="evenodd"
             />
           </svg>
         </div>
-        <div className="ml-3 flex-1">
-          <h3 className="text-sm font-medium text-green-800">Success</h3>
-          <p className="mt-1 text-sm text-green-700">{message}</p>
-          {onDismiss && (
-            <button
-              onClick={onDismiss}
-              className="mt-3 text-sm font-medium text-green-800 hover:text-green-900 underline"
-            >
-              Dismiss
-            </button>
-          )}
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-success-800">{title}</h3>
+          <p className="mt-0.5 text-sm text-success-700">{message}</p>
         </div>
         {onDismiss && (
           <button
             onClick={onDismiss}
-            className="flex-shrink-0 ml-4 text-green-400 hover:text-green-600"
+            aria-label="Dismiss"
+            className="flex-shrink-0 text-success-400 hover:text-success-600 transition-colors focus-visible:outline-none"
           >
-            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
                 d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"

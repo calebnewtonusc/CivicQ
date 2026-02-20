@@ -4,7 +4,7 @@ import { useBallot } from '../hooks/useBallots';
 import { useAuthContext } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
 import ContestCard from '../components/ContestCard';
-import LoadingSpinner from '../components/LoadingSpinner';
+import { ContestCardSkeleton, BallotHeaderSkeleton } from '../components/SkeletonLoader';
 import ErrorMessage from '../components/ErrorMessage';
 import { format } from 'date-fns';
 
@@ -23,11 +23,20 @@ const BallotPage: React.FC = () => {
   if (isLoading) {
     return (
       <Layout>
-        <div className="container mx-auto px-4 py-8 min-h-screen flex items-center justify-center">
-          <div className="text-center animate-fadeIn">
-            <div className="w-20 h-20 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <LoadingSpinner size="lg" message="Loading your ballot..." />
-            <p className="text-gray-500 mt-2">Fetching your local election information...</p>
+        <div className="container mx-auto px-4 py-8 max-w-5xl">
+          <BallotHeaderSkeleton />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+            {(['sk-stat-0', 'sk-stat-1', 'sk-stat-2'] as const).map((id, i) => (
+              <div key={id} className="card p-6 animate-fade-in" style={{ animationDelay: `${i * 0.07}s` }}>
+                <div className="skeleton h-4 w-20 rounded mb-3" />
+                <div className="skeleton h-8 w-12 rounded" />
+              </div>
+            ))}
+          </div>
+          <div className="space-y-5">
+            {['sk-contest-0', 'sk-contest-1', 'sk-contest-2'].map((id) => (
+              <ContestCardSkeleton key={id} />
+            ))}
           </div>
         </div>
       </Layout>
@@ -37,26 +46,14 @@ const BallotPage: React.FC = () => {
   if (error) {
     return (
       <Layout>
-        <div className="container mx-auto px-4 py-8 min-h-screen flex items-center justify-center">
-          <div className="max-w-md w-full animate-scaleIn">
-            <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-8 text-center">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Unable to Load Ballot</h3>
-              <ErrorMessage
-                message="Failed to load ballot. Please try again."
-                onRetry={() => refetch()}
-              />
-              <button
-                onClick={() => refetch()}
-                className="mt-4 px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-all shadow-md hover:shadow-lg"
-              >
-                Try Again
-              </button>
-            </div>
+        <div className="container mx-auto px-4 py-16 flex items-center justify-center">
+          <div className="max-w-md w-full">
+            <ErrorMessage
+              title="Unable to Load Ballot"
+              message="Failed to load ballot. Please check your connection and try again."
+              onRetry={() => refetch()}
+              variant="card"
+            />
           </div>
         </div>
       </Layout>
@@ -66,23 +63,20 @@ const BallotPage: React.FC = () => {
   if (!ballot) {
     return (
       <Layout>
-        <div className="container mx-auto px-4 py-8 min-h-screen flex items-center justify-center">
-          <div className="max-w-md w-full animate-fadeIn">
-            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-2xl p-8 text-center">
-              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">No Ballot Found</h3>
-              <p className="text-yellow-800 mb-6">Please select a ballot from the home page to get started.</p>
-              <Link
-                to="/"
-                className="inline-block px-6 py-3 bg-yellow-600 text-white rounded-xl font-semibold hover:bg-yellow-700 transition-all shadow-md hover:shadow-lg"
-              >
-                Go to Home Page
-              </Link>
+        <div className="container mx-auto px-4 py-16 flex items-center justify-center">
+          <div className="max-w-md w-full card p-12 text-center animate-scale-in">
+            <div className="w-16 h-16 bg-warning-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-warning-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
             </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">No Ballot Found</h3>
+            <p className="text-gray-500 text-sm mb-6">
+              Please select a ballot from the home page to get started.
+            </p>
+            <Link to="/" className="btn-primary inline-flex px-6 py-3">
+              Go to Home Page
+            </Link>
           </div>
         </div>
       </Layout>
@@ -275,22 +269,22 @@ const BallotPage: React.FC = () => {
   );
 };
 
-// Helper Component - Enhanced with gradients and animations
+// Helper Component
 const StatCard: React.FC<{
   label: string;
   value: number;
   icon: React.ReactNode;
   gradient: string;
 }> = ({ label, value, icon, gradient }) => (
-  <div className="group bg-white rounded-2xl shadow-md hover:shadow-xl border border-gray-100 p-6 transition-all hover:-translate-y-1 cursor-pointer">
+  <div className="group card hover:shadow-card-md hover:-translate-y-0.5 p-6 transition-all duration-200 cursor-default">
     <div className="flex items-center justify-between">
       <div className="flex-1">
-        <p className="text-sm font-medium text-gray-600 mb-2">{label}</p>
+        <p className="text-sm font-medium text-gray-500 mb-1">{label}</p>
         <p className={`text-4xl font-extrabold bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>
           {value}
         </p>
       </div>
-      <div className={`w-14 h-14 bg-gradient-to-br ${gradient} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
+      <div className={`w-13 h-13 bg-gradient-to-br ${gradient} rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-200 p-3`}>
         {icon}
       </div>
     </div>
